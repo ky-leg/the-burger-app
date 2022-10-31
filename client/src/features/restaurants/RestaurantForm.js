@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { Button, Error, FormField, Input, Label, Textarea } from "../../styles";
+import { Button, Error, FormField, Input, Label } from "../../styles";
+import {  fetchRestaurants } from "./restaurantsSlice"
 
-function NewRestaurant({ setRestaurants }) {
+function NewRestaurant() {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const history = useNavigate();
+  const dispatch = useDispatch()
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -25,7 +28,7 @@ function NewRestaurant({ setRestaurants }) {
     }).then((r) => {
       setIsLoading(false);
       if (r.ok) {
-        r.json().then((r)=> setRestaurants(r))
+        r.json().then(dispatch(fetchRestaurants()))
         .then(history(`/restaurants`));
       } else {
         r.json().then((err) => setErrors(err.errors));

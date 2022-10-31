@@ -1,51 +1,117 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import NewDish from "../dishes/DishForm";
+import NestedDishForm from "../dishes/NestedDishForm";
 import { Button, Error, FormField, Input, Label, Textarea } from "../../styles";
+import { useDispatch, useSelector } from "react-redux"
+import { fetchDishes } from "../dishes/dishesSlice";
 
-function NewRating({ restaurants, setDishes }) {
+
+function NewRating({ userId }) {
+  //redux setup
+  const dispatch = useDispatch();
+  const restaurants = useSelector((state) => state.restaurants.entities)
+
+  //rating state
   const [restaurantId, setRestaurantId] = useState("-")
   const [dishId, setDishId] = useState("-")
   const [score, setScore] = useState("");
   const [title, setTitle] = useState("");
   const [review, setReview ] = useState("")
-  const [errors, setErrors] = useState([]);
+
+  //misc
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState([]);
   const history = useNavigate();
 
+  if(false){
+    history()
+  }
+  
+  //dish state & nested form
+  const [dishName, setDishName] = useState("");
+  const [dishType, setDishType] = useState("");
+  const [dishVegan, setDishVegan] = useState(false)
+  const displayNestedForm = () => {
+    if (dishId !== "Make New Dish"){
+      return true
+    }
+    else 
+      return false 
+  }
+
+  //handle submit 
   function handleSubmit(e) {
     e.preventDefault();
     console.log("hey")
-    // setIsLoading(true);
-    // fetch("/dishes", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     restaurant_id: restaurantId,
-    //     name,
-    //     dish_type: type,
-    //     vegan
-    //   }),
-    // }).then((r) => {
-    //   setIsLoading(false);
-    //   if (r.ok) {
-    //     r.json().then((r)=> setDishes(r))
-    //     .then(history(`/dishes`));
-    //   } else {
-    //     r.json().then((err) => setErrors(err.errors));
-    //   }
-    // });
+    setIsLoading(true);
+
+    const rating = {
+      score,
+      title,
+      review,
+    }
+
+    const dish = {
+      restaurant_id: restaurantId, 
+      name: dishName,
+      dish_type: dishType,
+      vegan: dishVegan,
+      rating_attributes: rating
+    }
+
+    if (!displayNestedForm()){
+      console.log(dish)
+      fetch("/dishes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dish),
+      })
+      .then((r) => {
+        setIsLoading(false);
+        if (r.ok) {
+          r.json().then(dispatch(fetchDishes()))
+          .then(history(`/dishes`));
+        } else {
+          r.json().then((err) => setErrors(err.errors));
+        }
+      });
+      console.log("we're fetching to dishes and nesting a rating", dish)
+    }
+    else {
+      fetch("/ratings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dish_id: dishId,
+          user_id: userId,
+          score,
+          title,
+          review,
+        }),
+      })
+      .then((r) => {
+        setIsLoading(false);
+        if (r.ok) {
+          r.json().then(dispatch(fetchDishes()))
+          .then(history(`/dishes`));
+        } else {
+          r.json().then((err) => setErrors(err.errors));
+        }
+      });
+      console.log("we're fetching to ratings and associating to a dish", {
+        dish_id: dishId,
+        score,
+        title,
+        review,
+      })
+    }
+    
   }
-
-  console.log(restaurantId)
-
-
-  // const blankInput = () =>{
-  //   <option key="-">-</option>
-  // }
 
   const dishInput = () => {
     if (restaurantId == "-"){
@@ -60,22 +126,7 @@ function NewRating({ restaurants, setDishes }) {
     }
   }
 
-  // const newDishForm = () => {
-  //   if (dishId == "Make New Dish"){
-  //     return 
-  //   }
-
-  //   // else 
-  //   // return 
-  // }
-
-  const displayNestedForm = () => {
-    if (dishId !== "Make New Dish"){
-      return true
-    }
-    else 
-    return false 
-  }
+  
 
   return (
     <Wrapper>
@@ -106,7 +157,7 @@ function NewRating({ restaurants, setDishes }) {
                 {dishInput()}
               </select>
           </FormField>
-          {displayNestedForm() ? "" : <NewDish restaurants={restaurants} setDishes={setDishes}/>}
+          {displayNestedForm() ? "" : <NestedDishForm dishName={dishName} setDishName={setDishName} dishType={dishType} setDishType={setDishType} dishVegan={dishVegan} setDishVegan={setDishVegan}/>}
           <FormField>
             <Label htmlFor="title">Review Title</Label>
             <Input 

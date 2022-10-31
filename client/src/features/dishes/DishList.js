@@ -1,42 +1,52 @@
-import { useState, useEffect } from "react"; 
+// import { useState } from "react"; 
 import styled from "styled-components";
-import { Box, Button, Form, FormField, Label } from "../../styles";
-import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
+import { Box, Button } from "../../styles";
+import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
+import { fetchDishes } from "./dishesSlice";
+import { useDispatch, useSelector } from "react-redux";
 
  
 
-function DishList({dishes, setDishes, restaurants }) {
-    const [rating, setRating] = useState("???")
+function DishList({restaurantId}) {
+    //redux setup 
+    const dispatch = useDispatch();
+    const restaurants = useSelector((state) => state.restaurants.entities)
+    const dishes = useSelector((state) => state.dishes.entities)
+
+    //sorting dishes
     const params = useParams()
-    console.log(params.id)
-    console.log(restaurants.find(r => (r.id == params.id)))
+    const dishSort = () => {
+        if (params.id) {
+            return dishes.filter(r => r.id == params.id)
+        }
+        else {
+            return dishes
+        }
+    }
+    const displayDishes = dishSort()
 
-    // const displayDishes = () => {
-    //     if (params.id) {
-    //         console.log(restaurants.find(r => r.id === restaurantId))
-    //     }
-    //     else {
-    //         return dishes
-    //     }
-    // }
+    // console.log(restaurants.find(r => r.id==params.id).name)
 
-    // displayDishes()
-
+    const restaurantName = () => {
+        if (params.id)
+            return restaurants.find(r => r.id==params.id).name + " "
+        else 
+            return "All "
+    }
+    
+    //handling dish delete
     function handleDeleteDish(id){
         fetch(`/dishes/${id}`, {
             method: 'DELETE',
         })
-        .then(() => {
-            const newDishes = dishes.filter(dish => (dish.id !== id))
-            setDishes(newDishes)
-        })
+        .then(dispatch(fetchDishes()))
     }
 
     return (
         <Wrapper>
-            <h1>Top Rated Dishes</h1>
-            {dishes.length > 0 ? (
-                dishes.map((dish) => (
+            <h1>{restaurantName()}Top Rated Dishes</h1>
+            {displayDishes.length > 0 ? (
+                displayDishes.map((dish) => (
                     <Wrapper>
                         <Dish key={dish.id} >
                             <Box>

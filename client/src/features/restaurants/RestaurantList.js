@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react"; 
+import { useState } from "react"; 
 import styled from "styled-components";
 import { Box, Button, Form, FormField, Label } from "../../styles";
-import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
+import { BrowserRouter as Router,Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux"
+import { fetchRestaurants } from "./restaurantsSlice"
 
- 
-
-function RestaurantList({restaurants, setRestaurants}) {
+function RestaurantList() {
+    const restaurants = useSelector((state) => state.restaurants.entities)
     const [ filter, setFilter ] = useState("-")
     const allLocations = restaurants.map((r) => r.location)
     const locations = ["-", ...new Set(allLocations)]
+    const history = useNavigate()
+    const dispatch = useDispatch()
 
     const filteredRestaurants = () => {
         if (filter === "-")
@@ -21,13 +24,12 @@ function RestaurantList({restaurants, setRestaurants}) {
     }
 
     function handleDeleteRestaurant(id){
+        console.log(id)
         fetch(`/restaurants/${id}`, {
             method: 'DELETE',
         })
-        .then(() => {
-            const newRestaurants = restaurants.filter(restaurant => (restaurant.id !== id))
-            setRestaurants(newRestaurants)
-        })
+        .then(dispatch(fetchRestaurants()))
+        .then(history(`/restaurants`));
     }
 
 return (

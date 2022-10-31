@@ -1,17 +1,29 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { Button, Error, FormField, Input, Label, Textarea } from "../../styles";
+import { Button, Error, FormField, Input, Label } from "../../styles";
+import { fetchDishes } from "./dishesSlice";
 
-function NewDish({ restaurants, setDishes }) {
+function NewDish() {
+  //form fields
   const [restaurantId, setRestaurantId] = useState("-")
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [vegan, setVegan ] = useState(false)
   const [errors, setErrors] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+
+  //Routing
   const history = useNavigate();
 
+  //redux setup 
+  const dispatch = useDispatch();
+  const restaurants = useSelector((state) => state.restaurants.entities)
+
+  //Misc
+  const [isLoading, setIsLoading] = useState(false);
+
+  //form submission
   function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
@@ -29,7 +41,7 @@ function NewDish({ restaurants, setDishes }) {
     }).then((r) => {
       setIsLoading(false);
       if (r.ok) {
-        r.json().then((r)=> setDishes(r))
+        r.json().then(dispatch(fetchDishes()))
         .then(history(`/dishes`));
       } else {
         r.json().then((err) => setErrors(err.errors));
@@ -37,7 +49,6 @@ function NewDish({ restaurants, setDishes }) {
     });
   }
 
-  console.log(restaurantId)
 
   return (
     <Wrapper>

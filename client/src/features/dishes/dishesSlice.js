@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchRestaurants = createAsyncThunk("restaurants/fetchRestaurants", async () =>{
-  const response = await fetch("/restaurants");
+export const fetchDishes = createAsyncThunk("dishes/fetchDishes", async () =>{
+  const response = await fetch("/dishes");
   return await response.json();
 })
 
-const restaurantsSlice = createSlice({
-  name: "restaurants",
+const dishesSlice = createSlice({
+  name: "dishes",
   initialState: {
     entities: [],
     status: "idle",
@@ -15,11 +15,11 @@ const restaurantsSlice = createSlice({
  
   },
   extraReducers: {
-    [fetchRestaurants.pending](state){
+    [fetchDishes.pending](state){
       console.log('loading')
       state.status = "loading";
     },
-    [fetchRestaurants.fulfilled](state, action) {
+    [fetchDishes.fulfilled](state, action) {
       console.log("fulfilled")
       state.entities = action.payload;
       state.status = "idle";
@@ -27,6 +27,6 @@ const restaurantsSlice = createSlice({
   },
 })
 
-export const { } = restaurantsSlice.actions;
+export const { } = dishesSlice.actions;
 
-export default restaurantsSlice.reducer;
+export default dishesSlice.reducer;

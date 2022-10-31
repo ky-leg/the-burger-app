@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import restaurantsReducer from "./features/restaurants/restaurantsSlice.js";
-// import reviewsReducer from "./features/reviews/reviewsSlice";
+import usersReducer from "./login/usersSlice";
+import restaurantsReducer from "./features/restaurants/restaurantsSlice";
+import dishesReducer from "./features/dishes/dishesSlice"
 
 const store = configureStore({
   reducer: {
+    // users: usersReducer,
     restaurants: restaurantsReducer,
-    // reviews: reviewsReducer,
+    dishes: dishesReducer,
   },
 });
 

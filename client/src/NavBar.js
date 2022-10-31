@@ -17,7 +17,7 @@ function NavBar({ user, onLogin }) {
   return (
     <Wrapper>
       <Logo>
-          <Link to="/projects">The BIG Burger</Link>
+          <Link to="/projects">WKND EATR</Link>
       </Logo>
       <Nav>
           <Button as={Link} to={`/ratings/new`}>

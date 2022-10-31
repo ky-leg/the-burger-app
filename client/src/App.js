@@ -8,13 +8,17 @@ import DishList from './features/dishes/DishList'
 import RatingForm from './features/ratings/RatingForm';
 import './App.css';
 import { useState, useEffect  } from 'react';
-import { Routes, Route, useRouteMatch, useParams, Navigate } from "react-router-dom"; 
+import { Routes, Route } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux"
+import { fetchRestaurants } from './features/restaurants/restaurantsSlice';
+import { fetchDishes } from './features/dishes/dishesSlice'
 
 
 function App() {
   const [user, setUser] = useState(null)
-  const [restaurants, setRestaurants] = useState([]);
-  const [dishes, setDishes] = useState([]);
+
+  //redux setup 
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetch("/me").then((r) => {
@@ -25,17 +29,12 @@ function App() {
   }, [])
 
   useEffect(() => {
-    fetch("/restaurants")
-    .then((r) => r.json())
-    .then(setRestaurants)
-}, []);
+    dispatch(fetchRestaurants())
+  }, [dispatch]);
 
-useEffect(() => {
-  fetch("/dishes")
-  .then((r) => r.json())
-  .then(setDishes)
-}, []);
-
+  useEffect(() => {
+    dispatch(fetchDishes())
+  }, [dispatch]);
 
   if (!user) return <Login user={user} onLogin={setUser}/>
 
@@ -46,44 +45,25 @@ useEffect(() => {
         <Routes exact path="/">
           <Route>
             <Route path="/restaurants/new" 
-              element={
-              <RestaurantForm 
-              setRestaurants={setRestaurants}/>}
+              element={<RestaurantForm/>}
             />
             <Route 
               path="/restaurants" 
-              element={
-              <RestaurantList 
-              restaurants={restaurants} 
-              setRestaurants={setRestaurants}/>}
+              element={<RestaurantList/>}
             />
             <Route 
               path="/dishes/new" 
-              element={
-              <DishForm 
-              restaurants={restaurants} 
-              setDishes={setDishes}/>}
+              element={<DishForm/>}
             />
             <Route 
               path="/dishes" 
-              element={
-              <DishList 
-              dishes={dishes} 
-              setDishes={setDishes}/>}/>
+              element={<DishList/>}/>
             <Route 
               path={`/restaurants/:id`}
-              element={
-              <DishList 
-              restaurantId={`:id`}
-              restaurants={restaurants}
-              dishes={dishes} 
-              setDishes={setDishes}/>}/>
+              element={<DishList restaurantId={`:id`}/>}/>
             <Route 
               path="/ratings/new" 
-              element={
-              <RatingForm 
-              restaurants={restaurants} 
-              setRestaurants={setRestaurants}/>}
+              element={<RatingForm userId={user.id}/>}
             />
           </Route>
         </Routes>
