@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   # resources :rfis
   resources :restaurants, only: [:index, :create, :show, :destroy]
-  resources :dishes, only: [:index, :create, :show]
+  resources :dishes, only: [:index, :create, :show, :destroy]
   resources :ratings, only: [:index, :create, :show]
   resources :users, only: [:index, :show]
 

@@ -12,6 +12,7 @@ import { Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux"
 import { fetchRestaurants } from './features/restaurants/restaurantsSlice';
 import { fetchDishes } from './features/dishes/dishesSlice'
+import DishListAll from './features/dishes/DishListAll';
 
 
 function App() {
@@ -57,7 +58,7 @@ function App() {
             />
             <Route 
               path="/dishes" 
-              element={<DishList/>}/>
+              element={<DishListAll/>}/>
             <Route 
               path={`/restaurants/:id`}
               element={<DishList restaurantId={`:id`}/>}/>

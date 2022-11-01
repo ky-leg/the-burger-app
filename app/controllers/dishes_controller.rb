@@ -1,9 +1,9 @@
 class DishesController < ApplicationController
     rescue_from ActiveRecord::RecordInvalid, with: :invalid_record
-
+    
     def index
         dishes = Dish.all
-        render json: dishes
+        render json: dishes, include: ['ratings']
     end
 
     def show 
@@ -25,6 +25,7 @@ class DishesController < ApplicationController
     end
 
     def destroy 
+        puts 'yo'
         dish = Dish.find(params[:id])
         dish.destroy
         head :no_content

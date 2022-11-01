@@ -7,32 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 
  
 
-function DishList({}) {
+function DishListAll() {
     //redux setup 
     const dispatch = useDispatch();
     const restaurants = useSelector((state) => state.restaurants.entities)
     const dishes = useSelector((state) => state.dishes.entities)
 
-    //sorting dishes
-    const params = useParams()
-    console.log(dishes.filter(r => r.id == params.id))
-    const dishSort = () => {
-        if (params.id) {
-            return dishes.filter(d => d.restaurant_id == params.id)
-        }
-        else {
-            return dishes
-        }
-    }
-    const displayDishes = dishSort()
-   
-    //restauranrt name
-    const restaurantName = () => {
-        console.log(restaurants)
-        if (restaurants.find(r=>r.id == params.id)){
-            return (restaurants.find(r => (r.id == params.id)).name)
-        }
-    }
     
     //handling dish delete
     function handleDeleteDish(id){
@@ -42,15 +22,24 @@ function DishList({}) {
         .then(dispatch(fetchDishes()))
     }
 
+    console.log(dishes)
+
+    const restaurantName = (id) => {
+        if (restaurants.find(r=>r.id==id)){
+            return (restaurants.find(r => (r.id == id)).name)
+        }
+    }
+    console.log(restaurantName(2))
     return (
         <Wrapper>
-            <h1>{restaurantName()} Top Rated Dishes</h1>
-            {displayDishes.length > 0 ? (
-                displayDishes.map((dish) => (
+            <h1>Top Rated Dishes</h1>
+            {dishes.length > 0 ? (
+                dishes.map((dish) => (
                     <Wrapper>
                         <Dish key={dish.id} >
                             <Box>
                                 <h2>{dish.name}</h2>
+                                <h4>Restaurant: {restaurantName(dish.restaurant_id)}</h4>
                                 <em>Total Ratings: {dish.ratings.length} {dish.ratings.length>0 ? ` - Avg. Rating: ${dish.average}`: ""} </em>
                                 <p>
                                     {dish.ratings.length>0 ? 
@@ -93,4 +82,4 @@ const Dish = styled.article`
   margin-bottom: 24px;
 `;
 
-export default DishList;
+export default DishListAll;

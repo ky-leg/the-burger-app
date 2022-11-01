@@ -23,6 +23,7 @@ function RestaurantList() {
         }
     }
 
+    console.log(restaurants)
     function handleDeleteRestaurant(id){
         console.log(id)
         fetch(`/restaurants/${id}`, {
@@ -57,7 +58,7 @@ return (
                     <p>
                     <Link to={`${restaurant.id}`}>
                         <Button>
-                            {restaurant.name}'s Top Dishes
+                            Top Dishes
                         </Button>
                     </Link>
                     <>     </>
