@@ -29,7 +29,7 @@ function RatingList({user}) {
         else if  (neighborhoodFilter !== "-" && restaurantFilter === "-"){
             return ratings.filter((rating => (rating.restaurant.location === neighborhoodFilter)))
         }
-        else if (neighborhoodFilter === "-" && restaurantFilter !== "-"){
+        else if (neighborhoodFilter !== "-" && restaurantFilter !== "-"){
             return ratings.filter((rating => (rating.restaurant.name === restaurantFilter)))
         }
     }
