@@ -17,20 +17,19 @@ function NavBar({ user, onLogin }) {
   return (
     <Wrapper>
       <Logo>
-          <Link to="/projects">WKND EATR</Link>
+          <Link to="/">WKND EATR</Link>
       </Logo>
       <Nav>
+          <Button 
+          as={Link} to={`/user/${user.id}`}
+          >
+            {user.username}
+          </Button>
           <Button as={Link} to={`/ratings/new`}>
             New Review
           </Button>
-          <Button as={Link} to={`/dishes/new`}>
-            New Dish
-          </Button>
           <Button as={Link} to={`/restaurants`}>
             Restaurants
-          </Button>
-          <Button as={Link} to="/restaurants/new">
-            New Restaurant
           </Button>
         <Button variant="outline" 
         onClick={handleLogoutClick}

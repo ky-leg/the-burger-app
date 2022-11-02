@@ -13,7 +13,7 @@ class DishesController < ApplicationController
     end
 
     def create 
-        dish = Dish.create!(dish_params)
+        dish = Dish.create(dish_params)
         dishes = Dish.all
         render json: dishes, status: :created
     end
@@ -25,7 +25,6 @@ class DishesController < ApplicationController
     end
 
     def destroy 
-        puts 'yo'
         dish = Dish.find(params[:id])
         dish.destroy
         head :no_content
@@ -37,7 +36,11 @@ class DishesController < ApplicationController
     end
 
     def dish_params
-        params.permit(:restaurant_id, :name, :dish_type, :vegan)
+        # puts params
+        params.permit(
+        :restaurant_id, :name, :dish_type, :vegan,
+        :ratings_attributes => [:dish_id, :user_id, :score, :title, :review]
+        )
     end
 
 end

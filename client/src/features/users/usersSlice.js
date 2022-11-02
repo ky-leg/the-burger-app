@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () =>{
-  console.log("hello")
-  const response = await fetch("/me");
+  const response = await fetch("/users");
   return await response.json();
 })
 
@@ -17,16 +16,17 @@ const usersSlice = createSlice({
   },
   extraReducers: {
     [fetchUsers.pending](state){
+      console.log('loading')
       state.status = "loading";
     },
     [fetchUsers.fulfilled](state, action) {
-      console.log("hello")
+      console.log("fulfilled")
       state.entities = action.payload;
       state.status = "idle";
-    }
-  }
-});
+    },
+  },
+})
 
-// export const { } = usersSlice.actions;
+// export const {  } = usersSlice.actions;
 
 export default usersSlice.reducer;

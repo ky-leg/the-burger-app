@@ -1,6 +1,6 @@
 import { useState } from "react"; 
 import styled from "styled-components";
-import { Box, Button, Form, FormField, Label } from "../../styles";
+import { Box, Button, FormField, Label } from "../../styles"; // eslint-disable-next-line
 import { BrowserRouter as Router,Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux"
 import { fetchRestaurants } from "./restaurantsSlice"
@@ -23,9 +23,8 @@ function RestaurantList() {
         }
     }
 
-    console.log(restaurants)
+    
     function handleDeleteRestaurant(id){
-        console.log(id)
         fetch(`/restaurants/${id}`, {
             method: 'DELETE',
         })

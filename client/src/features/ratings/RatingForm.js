@@ -4,17 +4,18 @@ import styled from "styled-components";
 import NestedDishForm from "../dishes/NestedDishForm";
 import { Button, Error, FormField, Input, Label, Textarea } from "../../styles";
 import { useDispatch, useSelector } from "react-redux"
-import { fetchDishes } from "../dishes/dishesSlice";
-
+import { fetchDishes } from "../dishes/dishesSlice"; // eslint-disable-next-line
+import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
 
 function NewRating({ userId }) {
   //redux setup
   const dispatch = useDispatch();
   const restaurants = useSelector((state) => state.restaurants.entities)
+  const dishes = useSelector((state) => state.dishes.entities)  
 
   //rating state
-  const [restaurantId, setRestaurantId] = useState("-")
   const [dishId, setDishId] = useState("-")
+  const [restaurantId, setRestaurantId] = useState("-")
   const [score, setScore] = useState("");
   const [title, setTitle] = useState("");
   const [review, setReview ] = useState("")
@@ -23,10 +24,7 @@ function NewRating({ userId }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState([]);
   const history = useNavigate();
-
-  if(false){
-    history()
-  }
+  const params = useParams()
   
   //dish state & nested form
   const [dishName, setDishName] = useState("");
@@ -40,34 +38,42 @@ function NewRating({ userId }) {
       return false 
   }
 
+  console.log(typeof parseInt(restaurantId))
+
   //handle submit 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("hey")
     setIsLoading(true);
 
-    const rating = {
-      score,
-      title,
-      review,
-    }
+    
 
-    const dish = {
-      restaurant_id: restaurantId, 
-      name: dishName,
-      dish_type: dishType,
-      vegan: dishVegan,
-      rating_attributes: rating
-    }
+    // const dish = {
+    //   restaurant_id: restaurantId, 
+    //   name: dishName,
+    //   dish_type: dishType,
+    //   vegan: dishVegan,
+    //   ratings_attributes: rating
+    // }
 
+    //if there's the nested form, submit as to associate a nested form
     if (!displayNestedForm()){
-      console.log(dish)
       fetch("/dishes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(dish),
+        body: JSON.stringify({
+          restaurant_id: restaurantId, 
+          name: dishName,
+          dish_type: dishType,
+          vegan: dishVegan,
+          ratings_attributes: [{
+            user_id: userId,
+            score: score,
+            title,
+            review,
+          }]
+        }),
       })
       .then((r) => {
         setIsLoading(false);
@@ -75,19 +81,27 @@ function NewRating({ userId }) {
           r.json().then(dispatch(fetchDishes()))
           .then(history(`/dishes`));
         } else {
-          r.json().then((err) => setErrors(err.errors));
+          r.json().then((err) => console.log(err.errors));
         }
       });
-      console.log("we're fetching to dishes and nesting a rating", dish)
     }
+    //if there's no nested form 
     else {
+      const resolveDishId = () => {
+        if (params.restaurant_id && params.dish_id){
+          return params.dish_id
+        }
+        else {
+          return dishId
+        }
+      }
       fetch("/ratings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          dish_id: dishId,
+          dish_id: resolveDishId(),
           user_id: userId,
           score,
           title,
@@ -103,36 +117,56 @@ function NewRating({ userId }) {
           r.json().then((err) => setErrors(err.errors));
         }
       });
-      console.log("we're fetching to ratings and associating to a dish", {
-        dish_id: dishId,
-        score,
-        title,
-        review,
-      })
     }
     
   }
 
   const dishInput = () => {
-    if (restaurantId == "-"){
+    if (restaurantId === "-"){
       return (
         <option key={'Pick a restaurant'}>Pick a Restaurant</option>
       )
     }
     else {
-      const restaurant = restaurants.find((r) => (r.id == restaurantId))
+      const restaurant = restaurants.find((r) => (r.id === parseInt(restaurantId)))
       const dish = restaurant.dishes.map((dish) => (<option value={dish.id} key={dish.id}>{dish.name}</option>))
       return (dish)
     }
   }
 
-  
+  const dishOrRest = () => {
+    if (restaurants.length>0 && dishes.length>0){
+    const restaurant = restaurants.find((r) => (r.id === parseInt(params.restaurant_id)))
+    const dish = dishes.find((d) => (d.id === parseInt(params.dish_id)))
+      return {
+        restaurant: restaurant.name, 
+        dish: dish.name, 
+      }
+    }   
+    else {
+      return {
+        restaurant: "loading...", 
+        dish: "loading...", 
+      }
+    }
+  }  
 
   return (
     <Wrapper>
       <WrapperChild>
         <h2>Write Review</h2>
         <form onSubmit={handleSubmit}>
+            {/* conditionally rendering restaurant Name or a Form for Restaurant */}
+            {params.restaurant_id? 
+            (
+            <>
+              <Label htmlFor="restaurant">Restaurant</Label>
+              <em>{dishOrRest().restaurant}</em>
+              <p> 
+                
+              </p>
+            </>
+            ):(
             <FormField>
               <Label htmlFor="restaurant">Restaurant</Label>
               <select
@@ -145,7 +179,17 @@ function NewRating({ userId }) {
               {restaurants.map((restaurant) => (<option value={restaurant.id} key={restaurant.id}>{restaurant.name}</option>))}
               </select>
           </FormField>
-          <FormField>
+          )}
+          {/* conditionally rendering restaurant Name or a Form for Restaurant */}
+          {params.dish_id?
+          (<>
+            <Label htmlFor="Dish">Dish</Label>
+            <em>{dishOrRest().dish}</em>
+            <p> 
+                
+              </p>
+          </>):
+          (<FormField>
               <Label htmlFor="Dish">Dish</Label>
               <select
               id="dish"
@@ -157,6 +201,7 @@ function NewRating({ userId }) {
                 {dishInput()}
               </select>
           </FormField>
+          )}
           {displayNestedForm() ? "" : <NestedDishForm dishName={dishName} setDishName={setDishName} dishType={dishType} setDishType={setDishType} dishVegan={dishVegan} setDishVegan={setDishVegan}/>}
           <FormField>
             <Label htmlFor="title">Review Title</Label>
@@ -168,10 +213,12 @@ function NewRating({ userId }) {
               />
           </FormField>
           <FormField>
-            <Label htmlFor="score">Dish Score</Label>
+            <Label htmlFor="score">Dish Score (1 to 10)</Label>
             <Input
-              type="text"
+              type="number"
               id="score"
+              max="10"
+              min="1"
               value={score}
               onChange={(e) => setScore(e.target.value)}
             />
@@ -186,7 +233,7 @@ function NewRating({ userId }) {
           </FormField>
           <FormField>
             <Button color="primary" type="submit">
-              {isLoading ? "Loading..." : "Submit Dish"}
+              {isLoading ? "Loading..." : "Submit Review"}
             </Button>
           </FormField>
           <FormField>

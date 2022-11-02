@@ -1,25 +1,25 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchDishes = createAsyncThunk("dishes/fetchDishes", async () =>{
-  const response = await fetch("/dishes");
+export const fetchRatings = createAsyncThunk("ratings/fetchRatings", async () =>{
+  const response = await fetch("/ratings");
   return await response.json();
 })
 
-const dishesSlice = createSlice({
-  name: "dishes",
+const ratingsSlice = createSlice({
+  name: "ratings",
   initialState: {
     entities: [],
     status: "idle",
   },
   reducers: {
- 
+
   },
   extraReducers: {
-    [fetchDishes.pending](state){
+    [fetchRatings.pending](state){
       console.log('loading')
       state.status = "loading";
     },
-    [fetchDishes.fulfilled](state, action) {
+    [fetchRatings.fulfilled](state, action) {
       console.log("fulfilled")
       state.entities = action.payload;
       state.status = "idle";
@@ -27,6 +27,6 @@ const dishesSlice = createSlice({
   },
 })
 
-// export const { } = dishesSlice.actions;
+// export const {  } = ratingsSlice.actions;
 
-export default dishesSlice.reducer;
+export default ratingsSlice.reducer;

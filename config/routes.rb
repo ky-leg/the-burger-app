@@ -7,10 +7,9 @@ Rails.application.routes.draw do
   # get '/usersrestaurants/:id', to: 'restaurants#show_restaurants'
   # get '/proejcts/:id', to: ''
 
-  # resources :rfis
-  resources :restaurants, only: [:index, :create, :show, :destroy]
-  resources :dishes, only: [:index, :create, :show, :destroy]
-  resources :ratings, only: [:index, :create, :show]
+  resources :restaurants
+  resources :dishes
+  resources :ratings
   resources :users, only: [:index, :show]
 
   # Routing logic: fallback requests for React Router.

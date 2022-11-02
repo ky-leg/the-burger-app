@@ -27,6 +27,6 @@ const restaurantsSlice = createSlice({
   },
 })
 
-export const { } = restaurantsSlice.actions;
+// export const { } = restaurantsSlice.actions;
 
 export default restaurantsSlice.reducer;

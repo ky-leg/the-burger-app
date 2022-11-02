@@ -1,24 +1,24 @@
 // import { useState } from "react"; 
 import styled from "styled-components";
-import { Box, Button } from "../../styles";
+import { Box, Button } from "../../styles"; // eslint-disable-next-line
 import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
 import { fetchDishes } from "./dishesSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
- 
 
-function DishList({}) {
+function DishList( { onSetDish } ) {
     //redux setup 
     const dispatch = useDispatch();
     const restaurants = useSelector((state) => state.restaurants.entities)
     const dishes = useSelector((state) => state.dishes.entities)
 
+    console.log(onSetDish)
     //sorting dishes
     const params = useParams()
-    console.log(dishes.filter(r => r.id == params.id))
     const dishSort = () => {
-        if (params.id) {
-            return dishes.filter(d => d.restaurant_id == params.id)
+        if (params.id && dishes>0) {
+            return dishes.filter(d => d.restaurant_id === parseInt(params.id))
         }
         else {
             return dishes
@@ -26,11 +26,13 @@ function DishList({}) {
     }
     const displayDishes = dishSort()
    
-    //restauranrt name
-    const restaurantName = () => {
-        console.log(restaurants)
-        if (restaurants.find(r=>r.id == params.id)){
-            return (restaurants.find(r => (r.id == params.id)).name)
+    //
+    const restaurantName = (id="") => {
+        if (restaurants.find(r=>r.id === parseInt(params.id)) && id===""){
+            return (restaurants.find(r => (r.id === parseInt(params.id))).name)
+        }
+        else if (restaurants.find(r=>r.id===id)){
+            return (restaurants.find(r => (r.id === id)).name)
         }
     }
     
@@ -42,15 +44,20 @@ function DishList({}) {
         .then(dispatch(fetchDishes()))
     }
 
+    useEffect(() => {
+        dispatch(fetchDishes())
+      }, [dispatch]);
+
     return (
         <Wrapper>
             <h1>{restaurantName()} Top Rated Dishes</h1>
             {displayDishes.length > 0 ? (
                 displayDishes.map((dish) => (
                     <Wrapper>
-                        <Dish key={dish.id} >
+                        <Dish key={dish.name} >
                             <Box>
                                 <h2>{dish.name}</h2>
+                                {params.id? "":(<h4>Restaurant: {restaurantName(dish.restaurant_id)}</h4>)}
                                 <em>Total Ratings: {dish.ratings.length} {dish.ratings.length>0 ? ` - Avg. Rating: ${dish.average}`: ""} </em>
                                 <p>
                                     {dish.ratings.length>0 ? 
@@ -61,6 +68,11 @@ function DishList({}) {
                                     </Link>)
                                     : ""}
                                     <>     </>
+                                    <Link to={`/ratings/new/${dish.restaurant_id}/${dish.id}/`}>
+                                        <Button>
+                                            Review This Dish
+                                        </Button>
+                                    </Link>
                                     <Button onClick={e => handleDeleteDish(dish.id)}>
                                         Remove Dish
                                     </Button>

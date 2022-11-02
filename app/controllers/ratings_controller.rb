@@ -12,6 +12,7 @@ class RatingsController < ApplicationController
     end
 
     def create 
+        puts "i'm hit!"
         rating = Rating.create!(rating_params)
         ratings = Rating.all
         render json: ratings, status: :created
