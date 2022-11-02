@@ -1,9 +1,24 @@
 import { useState } from "react"; 
 import styled from "styled-components";
-import { Box, Button, FormField, Label } from "../../styles"; // eslint-disable-next-line
+// import {  Box, Label } from "../../styles"; // eslint-disable-next-line
 import { BrowserRouter as Router,Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux"
 import { fetchRestaurants } from "./restaurantsSlice"
+import { Container, Stack, Card, CardHeader, CardActions, CardContent, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button } from "@mui/material"
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+
+
+const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+  })(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }));
 
 function RestaurantList() {
     const restaurants = useSelector((state) => state.restaurants.entities)
@@ -32,55 +47,79 @@ function RestaurantList() {
         .then(history(`/restaurants`));
     }
 
+    const handleChange = (event) => {
+        setFilter(event.target.value);
+      };
+
 return (
-    <Wrapper>
-        <h1>Top Rated Restaurants</h1>
-        <FormField>
-            <Label htmlFor="filter">Filter By Neighborhood</Label>
-                <select
-                id="filter"
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                >
-                    {locations.map((location, i) => (
-                    <option key={i}>{location}</option>
-                    ))}
-                </select>
-        </FormField>
+    <Container maxWidth="sm">
+        <Box mt={2}>
+            <Typography variant="h4">Top Rated Restaurants</Typography>
+            <FormControl>
+                <Typography variant="subtitle1">Filter By Neighborhood</Typography>
+                    <Select
+                    
+                    id="filter"
+                    value={filter}
+                    onChange={handleChange}
+                    >
+                        {locations.map((location, i) => (
+                        <MenuItem key={i} value={location}>{location}</MenuItem>
+                        ))}
+                    </Select>
+            </FormControl>
+        </Box>
+        
+        <Stack mt={2} spacing={3}>
         {restaurants.length > 0 ? (
             filteredRestaurants().map((restaurant) => (
-                <Wrapper>
-                <Restaurant key={restaurant.id} >
-                <Box>
-                    <h2>{restaurant.name}</h2>
-                    <em>Restaurant Location: {restaurant.location}</em>
-                    <p>
-                    <Link to={`${restaurant.id}`}>
-                        <Button>
-                            Top Dishes
-                        </Button>
-                    </Link>
-                    <>     </>
-                    <Button onClick={e => handleDeleteRestaurant(restaurant.id)}>
+
+            <Card  key={restaurant.id} sx={{ minWidth: 345  }}>
+            <CardHeader
+                title={restaurant.name}
+                action ={
+                    <IconButton aria-label="settings">
+                        <DeleteIcon onClick={e => handleDeleteRestaurant(restaurant.id)}/>
+                    </IconButton>
+                
+                }
+                subheader={`Location: ${restaurant.location}`}
+            />            
+            <CardActions>
+                <Button 
+                    component={Link}
+                    to={`${restaurant.id}`}
+                    variant="contained">
+                        Top Dishes
+                </Button>
+                <Button 
+                    variant="outlined" onClick={e => handleDeleteRestaurant(restaurant.id)}>
                         Remove Restaurant
-                    </Button>
-                    </p>
-                </Box>
-                </Restaurant>
-                </Wrapper>
+                </Button>
+            </CardActions>
+                {/* <CardContent >
+            </CardContent> */}
+                
+            </Card>
+
             ))
+            
         ) : (
             <>
             <h2>No Restaurants Found</h2>
-            <Button as = {Link} to="/restaurants">
+            <Button component = {Link} to="/restaurants">
                 Back To Homepage
             </Button>
             </>
         )}
-        <Button as={Link} to="/restaurants/new">
-            Create New Restaurant
-        </Button>
-    </Wrapper>
+        </Stack>
+        <Box mt={2}>
+            <Button variant="contained" component = {Link} to="/restaurants/new">
+                Create New Restaurant
+            </Button>
+        </Box>
+        
+    </Container>
 )
 }
 

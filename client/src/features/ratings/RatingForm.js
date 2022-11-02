@@ -2,10 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import NestedDishForm from "../dishes/NestedDishForm";
-import { Button, Error, FormField, Input, Label, Textarea } from "../../styles";
+import { Error, FormField, Input, Label, Textarea } from "../../styles";
 import { useDispatch, useSelector } from "react-redux"
 import { fetchDishes } from "../dishes/dishesSlice"; // eslint-disable-next-line
 import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
+import { Stack, Rating, Container, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, TextField } from "@mui/material"
+
+const StyledRating = styled(Rating)({
+  '& .MuiRating-iconFilled': {
+    color: '#ff6d75',
+  },
+  '& .MuiRating-iconHover': {
+    color: '#ff3d47',
+  },
+});
 
 function NewRating({ userId }) {
   //redux setup
@@ -38,22 +48,11 @@ function NewRating({ userId }) {
       return false 
   }
 
-  console.log(typeof parseInt(restaurantId))
-
   //handle submit 
   function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
 
-    
-
-    // const dish = {
-    //   restaurant_id: restaurantId, 
-    //   name: dishName,
-    //   dish_type: dishType,
-    //   vegan: dishVegan,
-    //   ratings_attributes: rating
-    // }
 
     //if there's the nested form, submit as to associate a nested form
     if (!displayNestedForm()){
@@ -124,12 +123,12 @@ function NewRating({ userId }) {
   const dishInput = () => {
     if (restaurantId === "-"){
       return (
-        <option key={'Pick a restaurant'}>Pick a Restaurant</option>
+        <MenuItem key={'Pick a restaurant'}>Pick a Restaurant</MenuItem>
       )
     }
     else {
       const restaurant = restaurants.find((r) => (r.id === parseInt(restaurantId)))
-      const dish = restaurant.dishes.map((dish) => (<option value={dish.id} key={dish.id}>{dish.name}</option>))
+      const dish = restaurant.dishes.map((dish) => (<MenuItem value={dish.id} key={dish.id}>{dish.name}</MenuItem>))
       return (dish)
     }
   }
@@ -151,99 +150,96 @@ function NewRating({ userId }) {
     }
   }  
 
+  const handleIdChange = (event) => {
+    console.log(event.target.value)
+    setDishId(event.target.value);
+  };
+console.log(dishId, displayNestedForm())
   return (
-    <Wrapper>
-      <WrapperChild>
-        <h2>Write Review</h2>
-        <form onSubmit={handleSubmit}>
+    <Container maxWidth="sm">
+      <Stack mt={2} spacing={3}>
+    
+        <Typography variant="h4">Write Review</Typography>
+        <Stack mt={2} spacing={3}>
             {/* conditionally rendering restaurant Name or a Form for Restaurant */}
+            
+            
             {params.restaurant_id? 
             (
-            <>
-              <Label htmlFor="restaurant">Restaurant</Label>
-              <em>{dishOrRest().restaurant}</em>
-              <p> 
-                
-              </p>
-            </>
+              <Typography variant="subtitle1">Restaurant {dishOrRest().restaurant}</Typography>
             ):(
-            <FormField>
-              <Label htmlFor="restaurant">Restaurant</Label>
-              <select
-              id="restaurant"
-              value={restaurantId}
-              onChange={(e) => setRestaurantId(e.target.value)}
-              >
-              <option key={'-'}>-</option>
               
-              {restaurants.map((restaurant) => (<option value={restaurant.id} key={restaurant.id}>{restaurant.name}</option>))}
-              </select>
-          </FormField>
+            <FormControl>
+              <Typography variant="subtitle1">Restaurant</Typography>
+                <Select
+                id="restaurant"
+                value={restaurantId}
+                onChange={(e) => setRestaurantId(e.target.value)}
+                >
+                <MenuItem value='-' key={'-'}>-</MenuItem>
+                
+                {restaurants.map((restaurant) => (<MenuItem value={restaurant.id} key={restaurant.id}>{restaurant.name}</MenuItem>))}
+                </Select>
+            </FormControl>
+            
           )}
           {/* conditionally rendering restaurant Name or a Form for Restaurant */}
           {params.dish_id?
-          (<>
-            <Label htmlFor="Dish">Dish</Label>
-            <em>{dishOrRest().dish}</em>
-            <p> 
-                
-              </p>
-          </>):
-          (<FormField>
-              <Label htmlFor="Dish">Dish</Label>
-              <select
+          (
+            <Typography variant="subtitle1">Dish {dishOrRest().dish}</Typography>
+          ):
+          (
+
+              <FormControl>
+              <Typography variant="subtitle1">Dish</Typography>
+              <Select
               id="dish"
               value={dishId}
-              onChange={(e) => setDishId(e.target.value)}
+              onChange={handleIdChange}
               >
-                <option key={'-'}>-</option>
-                <option key={'New Dish'}>Make New Dish</option>
+                <MenuItem value='-' key={'-'}>-</MenuItem>
+                <MenuItem value='Make New Dish' key={'New Dish'}>Make New Dish</MenuItem>
                 {dishInput()}
-              </select>
-          </FormField>
+              </Select>
+          </FormControl>
           )}
+          </Stack>
+            
           {displayNestedForm() ? "" : <NestedDishForm dishName={dishName} setDishName={setDishName} dishType={dishType} setDishType={setDishType} dishVegan={dishVegan} setDishVegan={setDishVegan}/>}
-          <FormField>
-            <Label htmlFor="title">Review Title</Label>
-            <Input 
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              />
-          </FormField>
-          <FormField>
-            <Label htmlFor="score">Dish Score (1 to 10)</Label>
-            <Input
-              type="number"
-              id="score"
-              max="10"
-              min="1"
-              value={score}
-              onChange={(e) => setScore(e.target.value)}
-            />
-          </FormField>
-          <FormField>
-            <Label htmlFor="review">Review</Label>
-            <Textarea
-              id="review"
-              value={review}
-              onChange={(e) => setReview(e.target.value)}
-            />
-          </FormField>
-          <FormField>
-            <Button color="primary" type="submit">
+          <Typography variant="h5">Review</Typography>
+          <Stack mt={2} spacing={3}>
+            <FormControl>
+              <Typography component="legend">Score</Typography>
+              <Rating name="score" defaultValue={2} max={10} onChange={(e) => setScore(e.target.value)} value={score}/>
+            </FormControl>
+            <FormControl>
+              <Typography variant="subtitle1">Title</Typography>
+              <TextField id="title" label="Title" value={title} variant="outlined" onChange={(e) => setTitle(e.target.value)}/>
+            </FormControl>
+            <FormControl>
+              <Typography variant="subtitle1">Review</Typography>
+                <TextField
+                    id="outlined-textarea"
+                    label="Review Body"
+                    onChange={(e) => setReview(e.target.value)}
+                    placeholder="Placeholder"
+                    multiline
+                  />
+            </FormControl>
+            <Button variant="contained" type="submit" onClick={handleSubmit}>
               {isLoading ? "Loading..." : "Submit Review"}
             </Button>
-          </FormField>
-          <FormField>
+          </Stack>
+          
+        
+          
             {errors.map((err) => (
               <Error key={err}>{err}</Error>
             ))}
-          </FormField>
-        </form>
-      </WrapperChild>
-    </Wrapper>
+          
+        
+      </Stack>
+      </Container>
   );
 }
 

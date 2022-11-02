@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 // import { useDispatch, useSelector } from "react-redux"
 // import { userLogin } from "./usersSlice"
-import { Button, Error, Input, FormField, Label } from "../styles";
+import {  Error, Input, FormField, Label } from "../styles";
+import Button from '@mui/material/Button'
 
 function LoginForm({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -54,7 +55,7 @@ function LoginForm({ onLogin }) {
         />
       </FormField>
       <FormField>
-        <Button variant="fill" color="primary" type="submit">
+        <Button variant="contained"  type="submit">
           {isLoading ? "Loading..." : "Login"}
         </Button>
       </FormField>

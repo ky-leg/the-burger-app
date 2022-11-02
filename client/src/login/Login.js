@@ -15,7 +15,7 @@ function Login({ onLogin }) {
       
     return (
       <Wrapper>
-        <Logo>The BIG Burger</Logo>
+        <h1>WKND EATER</h1>
         {showLogin ? (
           <>
             <LoginForm onLogin={onLogin} />
