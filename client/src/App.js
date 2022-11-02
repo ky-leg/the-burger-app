@@ -14,6 +14,11 @@ import { fetchDishes } from './features/dishes/dishesSlice'
 import { fetchRatings } from './features/ratings/ratingsSlice';
 import RatingList from './features/ratings/RatingList';
 import { fetchUsers } from './features/users/usersSlice';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
+
 // import DishListAll from './features/dishes/DishListAll';
 
 

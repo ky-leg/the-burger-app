@@ -2,7 +2,12 @@ import { useState } from "react";
 import styled from "styled-components";
 import LoginForm from "./LoginForm"
 import SignUpForm from "./SignUpForm";
-import { Button } from "../styles";
+import Button from '@mui/material/Button'
+// import { Button } from "../styles";
+// import Container from '@mui/material/Container';
+// import Typography from '@mui/material/Typography';
+// import Box from '@mui/material/Box';
+// import Link from '@mui/material/Link';
 
 
 function Login({ onLogin }) {
@@ -17,7 +22,7 @@ function Login({ onLogin }) {
             <Divider />
             <p>
               Don't have an account? &nbsp;
-              <Button color="secondary" onClick={() => setShowLogin(false)}>
+              <Button variant="contained" onClick={() => setShowLogin(false)}>
                 Sign Up
               </Button>
             </p>
@@ -28,7 +33,7 @@ function Login({ onLogin }) {
             <Divider />
             <p>
               Already have an account? &nbsp;
-              <Button color="secondary" onClick={() => setShowLogin(true)}>
+              <Button variant="contained" onClick={() => setShowLogin(true)}>
                 Log In
               </Button>
             </p>
