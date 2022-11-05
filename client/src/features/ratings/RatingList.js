@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react"; 
 import styled from "styled-components";
-import { Box, Button, Form, FormField, Label } from "../../styles";
+import {  Form, FormField, Label } from "../../styles";
 import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Container, Stack, Card, CardHeader, CardActions, CardContent, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, Rating } from "@mui/material"
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 
  
 
@@ -40,29 +43,33 @@ function RatingList({user}) {
         if (!params.id){
             return {
                 upper: (
-                    <>
-                    <FormField>
-                        <Label htmlFor="neighborhoodFilter">Filter By Neighborhood</Label>
-                            <select
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="select-neighborhood-label">Filter By Neighborhood</InputLabel>
+                            <Select
+                            labelId="select-neighborhood"
                             id="neighborhoodFilter"
                             value={neighborhoodFilter}
                             onChange={(e) => setNeighborhoodFilter(e.target.value)}
+                            label="Neighborhood"
                             >
-                                {locations.map((location, i) => (<option key={i}>{location}</option>))}
-                            </select>
-                    </FormField>
-                    <FormField>
-                        <Label htmlFor="restaurantFilter">Filter By Restaurant</Label>
-                            <select
-                            id="restaurantFilter"
-                            value={restaurantFilter}
-                            onChange={(e) => setRestaurantFilter(e.target.value)}
-                            >
-                                {restaurantNames.map((name, i) => (<option key={i}>{name}</option>))}
-                            </select>
-                    </FormField>
-                    </>
+                                {locations.map((location, i) => (<MenuItem value={i} key={i}>{location}</MenuItem>))}
+                            </Select>
+                        </FormControl>
+                    
                 ),
+                lower: (
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>      
+                        <InputLabel id="select-restaurant-label">Filter By Restaurant</InputLabel>
+                        <Select
+                        labelId="select-restaurant"
+                        id="restaurantFilter"
+                        value={restaurantFilter}
+                        onChange={(e) => setRestaurantFilter(e.target.value)}
+                        label="Restaurant"
+                        >
+                            {restaurantNames.map((name, i) => (<MenuItem value={i} key={i}>{name}</MenuItem>))}
+                        </Select>
+                    </FormControl>),
                 title: "Latest",
                 ratings: filteredRatings(),
             }
@@ -72,15 +79,14 @@ function RatingList({user}) {
         {
             const thisUser = users.find(user => user.id === parseInt(params.id))
             return {
-                upper: (<>
-                    <User key={thisUser.id} >
-                        <Box>
-                            <h2>User: {thisUser.username}</h2>
-                            <h2>Name: {thisUser.first_name}</h2>
-                            <h2>Location: {thisUser.location}</h2>
-                        </Box>
-                    </User>
-                </>),
+                upper: (
+                    <Stack>
+                        <Typography variant="body">User: {thisUser.username}</Typography>
+                        <Typography variant="body">Name: {thisUser.first_name}</Typography>
+                        <Typography variant="body">Location: {thisUser.location}</Typography>
+                    </Stack>
+                ),
+                lower: "",
                 title: thisUser.first_name+"'s",
                 ratings: filteredRatings().filter(rating => rating.user_id === parseInt(thisUser.id)),
             }
@@ -106,33 +112,40 @@ function RatingList({user}) {
 
 
     return (
-        <Wrapper>
-            <h1>{filterSwitch().title} Ratings</h1>
+        <Container maxWidth="sm">
+            
+            <Typography variant="h4">{filterSwitch().title} Ratings</Typography>
+            <Stack mt={2} spacing={3}>
             {filterSwitch().upper}
+            {filterSwitch().lower}
             {ratings.length > 0 ? (
                 filterSwitch().ratings.map((rating) => (
-                    <Wrapper>
-                        <Rating key={rating.id} >
-                            <Box>
-                                <h2>{rating.dish.name} from {rating.restaurant.name}, {rating.score}/10</h2>
+                        <Card key={rating.id} sx={{ minWidth: 345  }}>
+                            <CardHeader
+                                title={`${rating.dish.name} from ${rating.restaurant.name}`}
+                                subtitle={`Location: ${rating.restaurant.location}`}
+                                action={
+                                    <IconButton>
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                }
+                            />
+                            <CardContent>
+                                <Typography variant="h6">{rating.title}</Typography>
+                                <Rating name="half-rating-read"  precision={0.1} value={rating.score} readOnly size="small"/>
+                                <Typography>{rating.review}</Typography>
+                            </CardContent>
+                            <CardActions>
                                 {!params.id? 
-                                    (<><>User Profile: </>
-                                    <Button as={Link} to={`/user/${rating.user.id}`}>
+                                    (
+                                    <Button component={Link} to={`/user/${rating.user.id}`} variant="outline">
                                         {rating.user.username}
                                     </Button>
-                                    </>):
-                                    ""
+                                    ):""
                                 } 
-                                <p> 
-                                </p>
-                                <em>Location:</em> <>{rating.restaurant.location}</>
-                                <h1>{rating.title}</h1>
-                                <p>
-                                    {rating.review}
-                                </p>
-                            </Box>
-                        </Rating>
-                    </Wrapper>
+                            </CardActions>
+                        </Card>
+
                 ))
             ) : (
                 <>
@@ -142,26 +155,13 @@ function RatingList({user}) {
                 </Button>
                 </>
             )}
-            <Button as={Link} to="/ratings/new">
-                Create New Rating
-            </Button>
-        </Wrapper>
+                <Button component={Link} to="/ratings/new" variant="outlined">
+                    Create New Rating
+                </Button>
+            
+            </Stack>
+        </Container>
     )
 }
-
-const Wrapper = styled.section`
-  max-width: 800px;
-  margin: 40px auto;
-`;
-
-const Rating = styled.article`
-  margin-bottom: 24px;
-`;
-
-const User = styled.article`
-  margin: 20px;
-   
-  
-`;
 
 export default RatingList;

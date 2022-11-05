@@ -9,22 +9,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 
 
-const ExpandMore = styled((props) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-  })(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  }));
-
 function RestaurantList() {
     const restaurants = useSelector((state) => state.restaurants.entities)
     const [ filter, setFilter ] = useState("-")
-    const allLocations = restaurants.map((r) => r.location)
-    const locations = ["-", ...new Set(allLocations)]
+    const locations = restaurants.map((r) => r.location)
     const history = useNavigate()
     const dispatch = useDispatch()
 
@@ -51,17 +39,20 @@ function RestaurantList() {
         setFilter(event.target.value);
       };
 
+      console.log(restaurants)
+
 return (
     <Container maxWidth="sm">
         <Box mt={2}>
-            <Typography variant="h4">Top Rated Restaurants</Typography>
-            <FormControl>
-                <Typography variant="subtitle1">Filter By Neighborhood</Typography>
+            <Typography variant="h4">Top Restaurants</Typography>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="select-restaurant-label">Filter By Location</InputLabel>
                     <Select
-                    
+                    labelId="select-neighborhood"
                     id="filter"
                     value={filter}
                     onChange={handleChange}
+                    label="Neighborhood"
                     >
                         {locations.map((location, i) => (
                         <MenuItem key={i} value={location}>{location}</MenuItem>
@@ -70,6 +61,7 @@ return (
             </FormControl>
         </Box>
         
+
         <Stack mt={2} spacing={3}>
         {restaurants.length > 0 ? (
             filteredRestaurants().map((restaurant) => (
@@ -78,8 +70,8 @@ return (
             <CardHeader
                 title={restaurant.name}
                 action ={
-                    <IconButton aria-label="settings">
-                        <DeleteIcon onClick={e => handleDeleteRestaurant(restaurant.id)}/>
+                    <IconButton aria-label="settings" onClick={e => handleDeleteRestaurant(restaurant.id)}>
+                        <DeleteIcon />
                     </IconButton>
                 
                 }
@@ -89,13 +81,10 @@ return (
                 <Button 
                     component={Link}
                     to={`${restaurant.id}`}
-                    variant="contained">
+                    variant="standard">
                         Top Dishes
                 </Button>
-                <Button 
-                    variant="outlined" onClick={e => handleDeleteRestaurant(restaurant.id)}>
-                        Remove Restaurant
-                </Button>
+
             </CardActions>
                 {/* <CardContent >
             </CardContent> */}
@@ -112,13 +101,11 @@ return (
             </Button>
             </>
         )}
-        </Stack>
-        <Box mt={2}>
-            <Button variant="contained" component = {Link} to="/restaurants/new">
+        
+            <Button variant="outlined" component = {Link} to="/restaurants/new">
                 Create New Restaurant
             </Button>
-        </Box>
-        
+            </Stack>
     </Container>
 )
 }

@@ -6,6 +6,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { Container } from "@mui/system";
 
 
 function TabPanel(props) {
@@ -59,9 +60,9 @@ function NavBar({ user, onLogin }) {
   }
 
   return (
-    <Wrapper>
-      <Box sx={{ width: '80%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <Container sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ width: '100%' }}>
+        <Box >
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
             <Tab 
               component={Link}
@@ -86,13 +87,16 @@ function NavBar({ user, onLogin }) {
               label="Logout"
               {...a11yProps(3)}>
             </Tab>
+            <Tab 
+              sx={{mx: 'auto'}}
+              component={Link}
+              to="/"
+              label="WKND EATR">
+            </Tab>
           </Tabs>
         </Box>
       </Box>
-          <Tab label="WKND EATR">
-              <Link to="/"/>
-          </Tab>
-  </Wrapper>
+  </Container>
   );
 }
 

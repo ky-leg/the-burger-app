@@ -1,10 +1,12 @@
 // import { useState } from "react"; 
-import styled from "styled-components";
-import { Box, Button } from "../../styles"; // eslint-disable-next-line
+import styled from "styled-components";// eslint-disable-next-line
 import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
 import { fetchDishes } from "./dishesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import { Container, Stack, Card, CardHeader, CardActions, CardContent, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, Rating } from "@mui/material"
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 
 
 function DishList( { onSetDish } ) {
@@ -49,50 +51,72 @@ function DishList( { onSetDish } ) {
       }, [dispatch]);
 
     return (
-        <Wrapper>
-            <h1>{restaurantName()} Top Rated Dishes</h1>
+        <Container maxWidth="sm">
+            <Typography variant="h4">{restaurantName()} Top Rated Dishes</Typography>
+            <Stack mt={2} spacing={3}>
             {displayDishes.length > 0 ? (
                 displayDishes.map((dish) => (
-                    <Wrapper>
-                        <Dish key={dish.name} >
-                            <Box>
-                                <h2>{dish.name}</h2>
-                                {params.id? "":(<h4>Restaurant: {restaurantName(dish.restaurant_id)}</h4>)}
-                                <em>Total Ratings: {dish.ratings.length} {dish.ratings.length>0 ? ` - Avg. Rating: ${dish.average}`: ""} </em>
-                                <p>
-                                    {dish.ratings.length>0 ? 
-                                    (<Link to={`/dish/${dish.id}/reviews`}>
-                                        <Button>
+   
+                        <Card key={dish.id} sx={{ minWidth: 345  }}>
+                            <CardHeader
+                            title={dish.name}
+                            subtitle={params.id? "":`Restaurant: ${restaurantName(dish.restaurant_id)}`}
+                            action={
+                                <IconButton aria-label="settings" onClick={e => handleDeleteDish(dish.id)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            }
+                            />
+                            <CardContent>
+                                <Typography variant="subtitle2">{dish.ratings.length>0 ? `Avg. Rating:`: ""} </Typography>
+                                {dish.ratings.length>0 ? <Rating name="half-rating-read"  precision={0.1} value={dish.average} readOnly size="small"/>:""}
+                                <Typography variant="subtitle2">Total Ratings: {dish.ratings.length} </Typography>
+                            </CardContent>
+                            <CardActions>
+                            {dish.ratings.length>0 ? 
+                                    (
+                                        <Button
+                                            component={Link}
+                                            to={`/dish/${dish.id}/reviews`}
+                                            variant="contained"
+                                        >
                                             Read Reviews    
                                         </Button>
-                                    </Link>)
+                                    )
                                     : ""}
-                                    <>     </>
-                                    <Link to={`/ratings/new/${dish.restaurant_id}/${dish.id}/`}>
-                                        <Button>
+                                        <Button
+                                            component={Link}
+                                            to={`/ratings/new/${dish.restaurant_id}/${dish.id}/`}
+                                            variant="contained"
+                                        >
                                             Review This Dish
                                         </Button>
-                                    </Link>
-                                    <Button onClick={e => handleDeleteDish(dish.id)}>
-                                        Remove Dish
-                                    </Button>
-                                </p>
-                            </Box>
-                        </Dish>
-                    </Wrapper>
+                            </CardActions>
+                        </Card>
                 ))
             ) : (
                 <>
                 <h2>No Dishes Found</h2>
-                <Button as = {Link} to="/dishes">
+                <Button 
+                    component={Link}
+                    to="/ratings"
+                    variant="contained"
+                >
                     Back To Homepage
                 </Button>
                 </>
             )}
-            <Button as={Link} to="/dishes/new">
-                Create New Dish
-            </Button>
-        </Wrapper>
+            </Stack>
+            <Box mt={2}>
+                <Button
+                    component={Link}
+                    to="/dishes/new"
+                    variant="contained"
+                >
+                    Create New Dish
+                </Button>
+            </Box>
+        </Container>
     )
 }
 

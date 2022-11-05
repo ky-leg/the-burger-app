@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import NestedDishForm from "../dishes/NestedDishForm";
-import { Error, FormField, Input, Label, Textarea } from "../../styles";
+import { Error } from "../../styles";
 import { useDispatch, useSelector } from "react-redux"
 import { fetchDishes } from "../dishes/dishesSlice"; // eslint-disable-next-line
 import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
 import { Stack, Rating, Container, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, TextField } from "@mui/material"
+
+
 
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
@@ -24,8 +26,8 @@ function NewRating({ userId }) {
   const dishes = useSelector((state) => state.dishes.entities)  
 
   //rating state
-  const [dishId, setDishId] = useState("-")
-  const [restaurantId, setRestaurantId] = useState("-")
+  const [dishId, setDishId] = useState("")
+  const [restaurantId, setRestaurantId] = useState("")
   const [score, setScore] = useState("");
   const [title, setTitle] = useState("");
   const [review, setReview ] = useState("")
@@ -56,6 +58,7 @@ function NewRating({ userId }) {
 
     //if there's the nested form, submit as to associate a nested form
     if (!displayNestedForm()){
+      console.log("hit")
       fetch("/dishes", {
         method: "POST",
         headers: {
@@ -121,7 +124,7 @@ function NewRating({ userId }) {
   }
 
   const dishInput = () => {
-    if (restaurantId === "-"){
+    if (restaurantId === ""){
       return (
         <MenuItem key={'Pick a restaurant'}>Pick a Restaurant</MenuItem>
       )
@@ -160,84 +163,80 @@ console.log(dishId, displayNestedForm())
       <Stack mt={2} spacing={3}>
     
         <Typography variant="h4">Write Review</Typography>
-        <Stack mt={2} spacing={3}>
+
             {/* conditionally rendering restaurant Name or a Form for Restaurant */}
-            
-            
             {params.restaurant_id? 
             (
               <Typography variant="subtitle1">Restaurant {dishOrRest().restaurant}</Typography>
             ):(
               
-            <FormControl>
-              <Typography variant="subtitle1">Restaurant</Typography>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="select-restaurant-label">Restaurant</InputLabel>
                 <Select
+                labelId="select-restaurant"
                 id="restaurant"
                 value={restaurantId}
                 onChange={(e) => setRestaurantId(e.target.value)}
+                label="Restaurant"
                 >
-                <MenuItem value='-' key={'-'}>-</MenuItem>
-                
                 {restaurants.map((restaurant) => (<MenuItem value={restaurant.id} key={restaurant.id}>{restaurant.name}</MenuItem>))}
                 </Select>
             </FormControl>
             
           )}
+
           {/* conditionally rendering restaurant Name or a Form for Restaurant */}
           {params.dish_id?
           (
             <Typography variant="subtitle1">Dish {dishOrRest().dish}</Typography>
           ):
           (
-
-              <FormControl>
-              <Typography variant="subtitle1">Dish</Typography>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="select-dish-label">Dish</InputLabel>
               <Select
+              labelId="select-dish"
               id="dish"
               value={dishId}
               onChange={handleIdChange}
+              label="Dish"
               >
-                <MenuItem value='-' key={'-'}>-</MenuItem>
-                <MenuItem value='Make New Dish' key={'New Dish'}>Make New Dish</MenuItem>
+
+                <MenuItem value='Make New Dish'>Make New Dish</MenuItem>
                 {dishInput()}
               </Select>
           </FormControl>
           )}
-          </Stack>
+
             
           {displayNestedForm() ? "" : <NestedDishForm dishName={dishName} setDishName={setDishName} dishType={dishType} setDishType={setDishType} dishVegan={dishVegan} setDishVegan={setDishVegan}/>}
           <Typography variant="h5">Review</Typography>
           <Stack mt={2} spacing={3}>
+            
             <FormControl>
-              <Typography component="legend">Score</Typography>
-              <Rating name="score" defaultValue={2} max={10} onChange={(e) => setScore(e.target.value)} value={score}/>
+              <TextField id="title" label="Title" value={title} variant="standard" onChange={(e) => setTitle(e.target.value)}/>
             </FormControl>
             <FormControl>
-              <Typography variant="subtitle1">Title</Typography>
-              <TextField id="title" label="Title" value={title} variant="outlined" onChange={(e) => setTitle(e.target.value)}/>
+              <Typography >Dish Score</Typography>
+              <Rating  label="Score"name="half-rating" defaultValue={2.5} precision={0.1} onChange={(e) => setScore(e.target.value)} value={score}/>
             </FormControl>
             <FormControl>
-              <Typography variant="subtitle1">Review</Typography>
                 <TextField
+                    variant="standard" 
                     id="outlined-textarea"
                     label="Review Body"
                     onChange={(e) => setReview(e.target.value)}
-                    placeholder="Placeholder"
+                    placeholder="Write Your Review"
                     multiline
                   />
             </FormControl>
-            <Button variant="contained" type="submit" onClick={handleSubmit}>
+            
+            <Button variant="outlined" type="submit" onClick={handleSubmit}>
               {isLoading ? "Loading..." : "Submit Review"}
             </Button>
           </Stack>
-          
-        
-          
             {errors.map((err) => (
               <Error key={err}>{err}</Error>
             ))}
-          
-        
       </Stack>
       </Container>
   );

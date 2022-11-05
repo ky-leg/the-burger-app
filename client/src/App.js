@@ -5,6 +5,7 @@ import RestaurantForm from "./features/restaurants/RestaurantForm"
 import RestaurantList from './features/restaurants/RestaurantList'
 import DishList from './features/dishes/DishList'
 import RatingForm from './features/ratings/RatingForm';
+import AllRatingsList from './features/ratings/AllRatingsList';
 import './App.css';
 import { useState, useEffect  } from 'react';
 import { Routes, Route } from "react-router-dom";
@@ -73,7 +74,7 @@ function App() {
       <main>
         <Routes exact path="/">
             <Route path="/" 
-              element={<RatingList/>}
+              element={<AllRatingsList/>}
             />
             <Route path="/user/:id" 
               element={<RatingList user={user}/>}
@@ -99,6 +100,10 @@ function App() {
               path="/ratings/new/:restaurant_id/:dish_id/" 
               element={<RatingForm userId={user.id} />}
             />
+            {/* <Route 
+              path="/dish/:dish_id/reviews/" 
+              element={<RatingForm userId={user.id} />}
+            /> */}
         </Routes>
       </main>
     </>
