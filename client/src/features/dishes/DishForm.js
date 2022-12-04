@@ -5,6 +5,9 @@ import styled from "styled-components";
 import { Button, Error, FormField, Input, Label } from "../../styles";
 import { fetchDishes } from "./dishesSlice";
 
+
+//CURRENTLY THIS IS NOT IN USE, ALL DISHES ARE ADDED VIA THE WRITE REVIEW PAGE, IE RATINGFORM.JS
+
 function NewDish() {
   //form fields
   const [restaurantId, setRestaurantId] = useState("-")
@@ -42,7 +45,7 @@ function NewDish() {
       setIsLoading(false);
       if (r.ok) {
         r.json().then(dispatch(fetchDishes()))
-        .then(history(`/dishes`));
+        .then(history(`/restaurants/${restaurantId}`));
       } else {
         r.json().then((err) => setErrors(err.errors));
       }

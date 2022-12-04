@@ -1,17 +1,8 @@
-import { useState, useEffect } from "react"; 
-import styled from "styled-components";
-import {  Form, FormField, Label } from "../../styles";
-import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { Container, Stack, Card, CardHeader, CardActions, CardContent, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, Rating } from "@mui/material"
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
-import Ratings from './Ratings'
 
- 
+import { Container,  FormControl, MenuItem, InputLabel, Select } from "@mui/material"
 
 function RatingsFilterForm({restaurantFilter, neighborhoodFilter, locations, restaurantNames, setNeighborhoodFilter, setRestaurantFilter}) {
-    
+
     return (
         <Container>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
@@ -23,10 +14,12 @@ function RatingsFilterForm({restaurantFilter, neighborhoodFilter, locations, res
                     onChange={(e) => setNeighborhoodFilter(e.target.value)}
                     label="Neighborhood"
                     >
-                        {locations.map((location, i) => (<MenuItem value={location} key={i}>{location}</MenuItem>))}
+                        {locations.length>0? 
+                        locations.map((location, i) => (<MenuItem value={location} key={i}>{location}</MenuItem>)): ""
+                        }
                     </Select>
             </FormControl>
-        {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>      
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>      
             <InputLabel id="select-restaurant-label">Filter By Restaurant</InputLabel>
             <Select
             labelId="select-restaurant"
@@ -35,12 +28,12 @@ function RatingsFilterForm({restaurantFilter, neighborhoodFilter, locations, res
             onChange={(e) => setRestaurantFilter(e.target.value)}
             label="Restaurant"
             >
-                {restaurantNames.map((restaurantName, i) => (<MenuItem value={restaurantName} key={i}>{restaurantName}</MenuItem>))}
+                {locations.length>0? 
+                restaurantNames.map((restaurantName, i) => (<MenuItem value={restaurantName} key={i}>{restaurantName}</MenuItem>)):""}
             </Select>
-        </FormControl> */}
+        </FormControl>
     </Container> 
     )
 }
-
 
 export default RatingsFilterForm;

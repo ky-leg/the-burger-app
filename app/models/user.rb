@@ -1,7 +1,8 @@
 class User < ApplicationRecord
     has_secure_password
-    has_many :burgers, through: :ratings
-    has_many :restaurants, through: :burgers
+    has_many :ratings
+    has_many :dishes, through: :ratings
+    has_many :restaurants, through: :dishes
 
     # validations
     validates :username, uniqueness: true, presence: true

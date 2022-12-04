@@ -42,6 +42,7 @@ function NewRating({ userId }) {
   const [dishName, setDishName] = useState("");
   const [dishType, setDishType] = useState("");
   const [dishVegan, setDishVegan] = useState(false)
+
   const displayNestedForm = () => {
     if (dishId !== "Make New Dish"){
       return true
@@ -54,8 +55,6 @@ function NewRating({ userId }) {
   function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-
-
     //if there's the nested form, submit as to associate a nested form
     if (!displayNestedForm()){
       console.log("hit")
@@ -81,7 +80,7 @@ function NewRating({ userId }) {
         setIsLoading(false);
         if (r.ok) {
           r.json().then(dispatch(fetchDishes()))
-          .then(history(`/dishes`));
+          .then(history(`/restaurants/${restaurantId}`));
         } else {
           r.json().then((err) => console.log(err.errors));
         }
@@ -114,7 +113,7 @@ function NewRating({ userId }) {
         setIsLoading(false);
         if (r.ok) {
           r.json().then(dispatch(fetchDishes()))
-          .then(history(`/dishes`));
+          .then(history(`/ratings/${resolveDishId()}`));
         } else {
           r.json().then((err) => setErrors(err.errors));
         }
@@ -157,19 +156,17 @@ function NewRating({ userId }) {
     console.log(event.target.value)
     setDishId(event.target.value);
   };
+
 console.log(dishId, displayNestedForm())
   return (
     <Container maxWidth="sm">
       <Stack mt={2} spacing={3}>
-    
         <Typography variant="h4">Write Review</Typography>
-
             {/* conditionally rendering restaurant Name or a Form for Restaurant */}
             {params.restaurant_id? 
             (
               <Typography variant="subtitle1">Restaurant {dishOrRest().restaurant}</Typography>
             ):(
-              
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="select-restaurant-label">Restaurant</InputLabel>
                 <Select
@@ -182,9 +179,7 @@ console.log(dishId, displayNestedForm())
                 {restaurants.map((restaurant) => (<MenuItem value={restaurant.id} key={restaurant.id}>{restaurant.name}</MenuItem>))}
                 </Select>
             </FormControl>
-            
           )}
-
           {/* conditionally rendering restaurant Name or a Form for Restaurant */}
           {params.dish_id?
           (
@@ -200,7 +195,6 @@ console.log(dishId, displayNestedForm())
               onChange={handleIdChange}
               label="Dish"
               >
-
                 <MenuItem value='Make New Dish'>Make New Dish</MenuItem>
                 {dishInput()}
               </Select>
@@ -211,7 +205,6 @@ console.log(dishId, displayNestedForm())
           {displayNestedForm() ? "" : <NestedDishForm dishName={dishName} setDishName={setDishName} dishType={dishType} setDishType={setDishType} dishVegan={dishVegan} setDishVegan={setDishVegan}/>}
           <Typography variant="h5">Review</Typography>
           <Stack mt={2} spacing={3}>
-            
             <FormControl>
               <TextField id="title" label="Title" value={title} variant="standard" onChange={(e) => setTitle(e.target.value)}/>
             </FormControl>

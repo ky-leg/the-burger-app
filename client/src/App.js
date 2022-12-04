@@ -3,8 +3,9 @@ import NavBar from './NavBar';
 import Login from "./login/Login"
 import RestaurantForm from "./features/restaurants/RestaurantForm"
 import RestaurantList from './features/restaurants/RestaurantList'
-import DishList from './features/dishes/DishList'
+import RestaurantDishList from './features/dishes/RestaurantDishList'
 import RatingForm from './features/ratings/RatingForm';
+import UpdateRatingForm from './features/ratings/UpdateRatingForm'
 import AllRatingsList from './features/ratings/AllRatingsList';
 import './App.css';
 import { useState, useEffect  } from 'react';
@@ -15,10 +16,8 @@ import { fetchDishes } from './features/dishes/dishesSlice'
 import { fetchRatings } from './features/ratings/ratingsSlice';
 import RatingList from './features/ratings/RatingList';
 import { fetchUsers } from './features/users/usersSlice';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
+import UserRatingsList from './features/ratings/UserRatingsList'
+import DishRatingsList from './features/ratings/DishRatingsList';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -74,10 +73,10 @@ function App() {
       <main>
         <Routes exact path="/">
             <Route path="/" 
-              element={<AllRatingsList/>}
+              element={<AllRatingsList user={user}/>}
             />
             <Route path="/user/:id" 
-              element={<RatingList user={user}/>}
+              element={<UserRatingsList user={user}/>}
             />
             <Route path="/restaurants/new" 
               element={<RestaurantForm/>}
@@ -88,10 +87,10 @@ function App() {
             />
             <Route 
               path="/dishes" 
-              element={<DishList />}/>
+              element={<RestaurantDishList />}/>
             <Route 
               path={`/restaurants/:id`}
-              element={<DishList />}/>
+              element={<RestaurantDishList />}/>
             <Route 
               path="/ratings/new" 
               element={<RatingForm userId={user.id}/>}
@@ -100,10 +99,14 @@ function App() {
               path="/ratings/new/:restaurant_id/:dish_id/" 
               element={<RatingForm userId={user.id} />}
             />
-            {/* <Route 
-              path="/dish/:dish_id/reviews/" 
-              element={<RatingForm userId={user.id} />}
-            /> */}
+            <Route 
+              path="/ratings/:dish_id/" 
+              element={<DishRatingsList userId={user.id} />}
+            />
+            <Route 
+              path="/ratings/update/:rating_id" 
+              element={<UpdateRatingForm userId={user.id} />}
+            />
         </Routes>
       </main>
     </>

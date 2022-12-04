@@ -4,56 +4,32 @@ import { useSelector } from "react-redux";
 import { Container, Stack, Typography, Button } from "@mui/material"
 import Ratings from './Ratings'
 import RatingsFilterForm from './RatingsFilter/RatingsFilterForm'
+import UserCard from "../users/UserCard";
 
-function AllRatingsList({user}) {
+function UserRatingsList({user}) {
     //redux stores 
     const restaurants = useSelector((state) => state.restaurants.entities)
     const ratings = useSelector((state) => state.ratings.entities)
+    const users = useSelector((state) => state.users.entities)
 
-    //filter state setup 
-    const allLocations = restaurants.map((r) => r.location)
-    const allRestaurants = restaurants.map((r) => r.name)
-    const locations = ["-", ...new Set(allLocations)] // can eventually be refactored
-    const restaurantNames = ["-", ...new Set(allRestaurants)] // can eventually be refactored
-    const [ restaurantFilter, setRestaurantFilter ] = useState("-")
-    const [ locationFilter, setLocationFilter ] = useState("-")
+    const params = useParams()
 
-    // console.log(locations)
-    //calls our function to filter out ratings
-    // setFilteredRatings(FilteredRatingsFunction)
+    const userPage = users.find(user => user.id == params.id )
 
     function filteredRatingsFunction() {
-        if (locationFilter === "-" && restaurantFilter === "-")
-            {
-                return ratings
-            }
-            else if  (locationFilter !== "-" && restaurantFilter === "-"){
-                return ratings.filter((rating => (rating.restaurant.location === locationFilter)))
-            }
-            else if (restaurantFilter !== "-" && locationFilter === "-"){
-                return ratings.filter((rating => (rating.restaurant.name === restaurantFilter)))
-            }
-            else {
-                return (ratings.filter((rating => (rating.restaurant.name === restaurantFilter)))
-                .filter((rating => (rating.restaurant.location === locationFilter))))
-            }
+        return userPage.ratings
     }
 
+    console.log(userPage)
     return (
         <Container maxWidth="sm">
-            <Typography variant="h4">Latest Ratings</Typography>
+            <Typography variant="h4">{userPage.username}</Typography>
             <Stack mt={2} spacing={3}>
-                <RatingsFilterForm 
-                    neighborhoodFilter={locationFilter} 
-                    restaurantFilter={restaurantFilter} 
-                    locations={locations} 
-                    
-                    restaurantNames={restaurantNames}
-                    setRestaurantFilter={setRestaurantFilter}
-                    setNeighborhoodFilter={setLocationFilter}
-                />
+                {userPage? (
+                <UserCard user={userPage}/>
+                ):""}
             {ratings ? (
-                <Ratings ratings={filteredRatingsFunction()} displayUserButton={true}/>
+                <Ratings ratings={filteredRatingsFunction()}/>
             ) : (
                 <>
                 <h2>No Ratings Found</h2>
@@ -70,7 +46,7 @@ function AllRatingsList({user}) {
     )
 }
 
-export default AllRatingsList;
+export default UserRatingsList;
 
 // NOTES 
 // a container for restaurants and its filters
