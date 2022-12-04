@@ -69,7 +69,7 @@ function UpdateRatingForm({ userId }) {
       setIsLoading(false);
       if (r.ok) {
         r.json().then(dispatch(fetchDishes()))
-        .then(history(`/restaurants/${params.restaurant_id}`));
+        .then(history(`/ratings/${dishId}}`));
       } else {
         r.json().then((err) => setErrors(err.errors));
       }

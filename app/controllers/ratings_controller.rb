@@ -24,6 +24,12 @@ class RatingsController < ApplicationController
         render json: ratings
     end
 
+    def update 
+       rating = Rating.find(params[:id])
+       rating.update!(rating_params)
+       render json: rating 
+    end
+
     def destroy 
         rating = Rating.find(params[:id])
         rating.destroy
