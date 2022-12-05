@@ -2,13 +2,14 @@ import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 import Rating from './Rating';
 
-function Ratings({ratings, displayUserButton, displayTitleOff}) {
+function Ratings({ratings, displayUserButton, displayTitleOff, handleDeleteRating}) {
     return (
             (ratings) ? (
                 ratings.map((rating) => (
                     <Rating rating={rating} 
                             displayUserButton={displayUserButton}
                             displayTitleOff={displayTitleOff}
+                            handleDeleteRating={handleDeleteRating}
                             />
                 ))
             ) : (

@@ -6,7 +6,8 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Alert from '@mui/material/Alert';
 
-function Rating({rating, displayUserButton, displayTitleOff}) {
+function Rating({rating, displayUserButton, displayTitleOff, handleDeleteRating}) {
+    
     const [user, setUser] = useState(null)
     const [error, setError] = useState("")
     const navigate = useNavigate()
@@ -33,13 +34,14 @@ function Rating({rating, displayUserButton, displayTitleOff}) {
 
     function onDeleteClick(){
         if (parseInt(rating.user.id) === parseInt(user.id)){
-            console.log('this user should be able to delete')
-             
+            handleDeleteRating(rating.id, rating.dish.id)
+            
         }
         else {
             setError(<Alert severity="error">You may only delete one of your own reviews!</Alert>)  
         }
     }
+
 
     return (
         rating? (
@@ -49,12 +51,7 @@ function Rating({rating, displayUserButton, displayTitleOff}) {
                 <CardHeader
                 title={`${rating.dish.name} from ${rating.restaurant.name}`}
                 subtitle={`Location: ${rating.restaurant.location}`}
-                action={
-                    <IconButton>
-                        <DeleteIcon/>
-                        <EditIcon/>
-                    </IconButton>
-                }
+                
             />
             ):""}
             <CardContent>

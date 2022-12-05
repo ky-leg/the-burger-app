@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react"; 
+import { useNavigate } from "react-router";
+import { fetchRatings } from "../ratings/ratingsSlice";
 import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Container, Stack, Typography, Button } from "@mui/material"
 import Ratings from './Ratings'
 import RatingsFilterForm from './RatingsFilter/RatingsFilterForm'
 
 function DishRatingsList() {
+    const dispatch = useDispatch(); 
+    const history = useNavigate(); 
     //redux stores 
     const restaurants = useSelector((state) => state.restaurants.entities)
     const ratings = useSelector((state) => state.ratings.entities)
@@ -27,14 +31,23 @@ function DishRatingsList() {
     const restaurant = filteredRestaurantFunction()
     const dishRatings = filteredDishFunction().ratings
 
-    console.log(dishRatings, params.dish_id)
+    function handleDeleteRating(ratingId, dishId){
+        fetch(`/ratings/${ratingId}`, {
+            method: "DELETE",
+          })
+          .then(() => {
+            dispatch(fetchRatings())
+            .then(history(`/`))
+            
+          });
+    }
 
     return (
         <Container maxWidth="sm">
             <Typography variant="h4">Ratings for {dish.name} from {restaurant.name}</Typography>
             <Stack mt={2} spacing={3}>
             {ratings ? (
-                <Ratings ratings={dishRatings} displayUserButton={true} displayTitleOff={true}/>
+                <Ratings ratings={dishRatings} displayUserButton={true} displayTitleOff={true} handleDeleteRating={handleDeleteRating}/>
             ) : (
                 <>
                 <h2>No Ratings Found</h2>

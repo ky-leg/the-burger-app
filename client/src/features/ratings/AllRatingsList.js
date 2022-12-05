@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react"; 
 import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 import { Container, Stack, Typography, Button } from "@mui/material"
+import { fetchRatings } from "../ratings/ratingsSlice";
 import Ratings from './Ratings'
 import RatingsFilterForm from './RatingsFilter/RatingsFilterForm'
 
 function AllRatingsList({user}) {
+    const dispatch = useDispatch(); 
+    const history = useNavigate(); 
+
+
     //redux stores 
     const restaurants = useSelector((state) => state.restaurants.entities)
     const ratings = useSelector((state) => state.ratings.entities)
@@ -39,6 +45,19 @@ function AllRatingsList({user}) {
             }
     }
 
+    console.log('reloaded page')
+
+    function handleDeleteRating(ratingId, dishId){
+        fetch(`/ratings/${ratingId}`, {
+            method: "DELETE",
+          })
+          .then(() => {
+            dispatch(fetchRatings())
+            .then(history(`/`))
+            
+          });
+    }
+
     return (
         <Container maxWidth="sm">
             <Typography variant="h4">Latest Ratings</Typography>
@@ -53,7 +72,7 @@ function AllRatingsList({user}) {
                     setNeighborhoodFilter={setLocationFilter}
                 />
             {ratings ? (
-                <Ratings ratings={filteredRatingsFunction()} displayUserButton={true}/>
+                <Ratings ratings={filteredRatingsFunction()} displayUserButton={true} handleDeleteRating={handleDeleteRating}/>
             ) : (
                 <>
                 <h2>No Ratings Found</h2>
