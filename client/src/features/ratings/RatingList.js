@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 
  
-
+//review what updates when a rating is submitted... 
 function RatingList({user}) {
     //redux stores 
     const restaurants = useSelector((state) => state.restaurants.entities)

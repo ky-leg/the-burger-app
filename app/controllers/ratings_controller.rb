@@ -8,6 +8,7 @@ class RatingsController < ApplicationController
 
     def show 
         rating = Rating.find(params[:id])
+        puts 'IM HIT'
         render json: rating
     end
 

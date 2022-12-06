@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   # get '/usersrestaurants/:id', to: 'restaurants#show_restaurants'
   # get '/proejcts/:id', to: ''
 
-  resources :restaurants
+  resources :restaurants 
   resources :dishes
   resources :ratings
   resources :users, only: [:index, :show]

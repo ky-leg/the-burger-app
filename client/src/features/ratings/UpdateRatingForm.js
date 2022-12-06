@@ -24,9 +24,8 @@ function UpdateRatingForm({ userId }) {
   //redux setup
   const dispatch = useDispatch();
   const restaurants = useSelector((state) => state.restaurants.entities)
-  const dishes = useSelector((state) => state.dishes.entities)  
   const ratings = useSelector((state) => state.ratings.entities)
-  console.log(ratings)
+
   //accessing params to discern if we aer upadting an existing rating
   const params = useParams()
   function ratingFinder() {
@@ -36,8 +35,6 @@ function UpdateRatingForm({ userId }) {
   console.log(ratingFinder(), params.rating_id)
 
   //rating state
-  const [dishId, setDishId] = useState(rating.dish.id)
-  const [restaurantId, setRestaurantId] = useState(rating.restaurant.id)
   const [score, setScore] = useState(rating.score);
   const [title, setTitle] = useState(rating.title);
   const [review, setReview ] = useState(rating.review)
@@ -58,8 +55,8 @@ function UpdateRatingForm({ userId }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        dish_id: dishId,
-        user_id: userId,
+        dish_id: rating.dish_id,
+        user_id: rating.user_id,
         score,
         title,
         review,
@@ -69,7 +66,7 @@ function UpdateRatingForm({ userId }) {
       setIsLoading(false);
       if (r.ok) {
         r.json().then(dispatch(fetchDishes()))
-        .then(history(`/ratings/${dishId}}`));
+        .then(history(`/ratings/${rating.dish_id}}`));
       } else {
         r.json().then((err) => setErrors(err.errors));
       }
@@ -77,52 +74,15 @@ function UpdateRatingForm({ userId }) {
     
   }
 
-  const dishInput = () => {
-    if (restaurantId === ""){
-      return (
-        <MenuItem key={'Pick a restaurant'}>Pick a Restaurant</MenuItem>
-      )
-    }
-    else {
-      const restaurant = restaurants.find((r) => (r.id === parseInt(restaurantId)))
-      const dish = restaurant.dishes.map((dish) => (<MenuItem value={dish.id} key={dish.id}>{dish.name}</MenuItem>))
-      return (dish)
-    }
-  }
 
-  const handleIdChange = (event) => {
-    console.log(event.target.value)
-    setDishId(event.target.value);
-  };
 
+  if (!rating){ return <p> Loading... </p>}
   return (
     <Container maxWidth="sm">
       <Stack mt={2} spacing={3}>
-        <Typography variant="h4">Write Review</Typography>
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="select-restaurant-label">Restaurant</InputLabel>
-              <Select
-              labelId="select-restaurant"
-              id="restaurant"
-              value={restaurantId}
-              onChange={(e) => setRestaurantId(e.target.value)}
-              label="Restaurant"
-              >
-              {restaurants.map((restaurant) => (<MenuItem value={restaurant.id} key={restaurant.id}>{restaurant.name}</MenuItem>))}
-              </Select>
-          </FormControl>
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="select-dish-label">Dish</InputLabel>
-            <Select
-            labelId="select-dish"
-            id="dish"
-            value={dishId}
-            onChange={handleIdChange}
-            label="Dish"
-            >
-              {dishInput()}
-            </Select>
-          </FormControl>
+        <Typography variant="h4">Update Your Review</Typography>
+          <Typography variant="subtitle1">Restaurant: {rating.restaurant.name}</Typography>
+          <Typography variant="subtitle1">Dish: {rating.dish.name}</Typography>
           <Typography variant="h5">Review</Typography>
           <Stack mt={2} spacing={3}>
             <FormControl>
@@ -136,6 +96,7 @@ function UpdateRatingForm({ userId }) {
                 <TextField
                     variant="standard" 
                     id="outlined-textarea"
+                    defaultValue={rating.review}
                     value={review}
                     label="Review Body"
                     onChange={(e) => setReview(e.target.value)}

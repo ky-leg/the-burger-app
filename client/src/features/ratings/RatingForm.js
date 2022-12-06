@@ -4,9 +4,12 @@ import styled from "styled-components";
 import NestedDishForm from "../dishes/NestedDishForm";
 import { Error } from "../../styles";
 import { useDispatch, useSelector } from "react-redux"
-import { fetchDishes } from "../dishes/dishesSlice"; // eslint-disable-next-line
+import { fetchRestaurants } from '../restaurants/restaurantsSlice';
+import { fetchDishes } from '../dishes/dishesSlice'
+import { fetchRatings } from '../ratings/ratingsSlice';// eslint-disable-next-line
 import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
 import { Stack, Rating, Container, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, TextField } from "@mui/material"
+
 
 
 
@@ -57,7 +60,6 @@ function NewRating({ userId }) {
     setIsLoading(true);
     //if there's the nested form, submit as to associate a nested form
     if (!displayNestedForm()){
-      console.log("hit")
       fetch("/dishes", {
         method: "POST",
         headers: {
@@ -80,13 +82,14 @@ function NewRating({ userId }) {
         setIsLoading(false);
         if (r.ok) {
           r.json().then(dispatch(fetchDishes()))
+          .then(dispatch(fetchRatings()))
+          .then(dispatch(fetchRestaurants()))
           .then(history(`/restaurants/${restaurantId}`));
         } else {
           r.json().then((err) => console.log(err.errors));
         }
       });
     }
-    //if there's no nested form 
     else {
       const resolveDishId = () => {
         if (params.restaurant_id && params.dish_id){
@@ -113,6 +116,8 @@ function NewRating({ userId }) {
         setIsLoading(false);
         if (r.ok) {
           r.json().then(dispatch(fetchDishes()))
+          .then(dispatch(fetchRatings()))
+          .then(dispatch(fetchRestaurants()))
           .then(history(`/ratings/${resolveDishId()}`));
         } else {
           r.json().then((err) => setErrors(err.errors));
@@ -165,7 +170,7 @@ console.log(dishId, displayNestedForm())
             {/* conditionally rendering restaurant Name or a Form for Restaurant */}
             {params.restaurant_id? 
             (
-              <Typography variant="subtitle1">Restaurant {dishOrRest().restaurant}</Typography>
+              <Typography variant="subtitle1">Restaurant: <strong>{dishOrRest().restaurant}</strong></Typography>
             ):(
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="select-restaurant-label">Restaurant</InputLabel>
@@ -183,7 +188,7 @@ console.log(dishId, displayNestedForm())
           {/* conditionally rendering restaurant Name or a Form for Restaurant */}
           {params.dish_id?
           (
-            <Typography variant="subtitle1">Dish {dishOrRest().dish}</Typography>
+            <Typography variant="subtitle1">Dish: <strong>{dishOrRest().dish}</strong></Typography>
           ):
           (
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>

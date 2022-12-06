@@ -11,16 +11,18 @@ function UserRatingsList({user}) {
     const restaurants = useSelector((state) => state.restaurants.entities)
     const ratings = useSelector((state) => state.ratings.entities)
     const users = useSelector((state) => state.users.entities)
-
     const params = useParams()
-
     const userPage = users.find(user => user.id == params.id )
 
     function filteredRatingsFunction() {
-        return userPage.ratings
+        const filteredRatings = ratings.filter(rating => parseInt(rating.user_id)===parseInt(params.id))
+        return filteredRatings
     }
 
-    console.log(userPage)
+    
+
+    if (!userPage) return <p>Loading...</p>;
+
     return (
         <Container maxWidth="sm">
             <Typography variant="h4">{userPage.username}</Typography>

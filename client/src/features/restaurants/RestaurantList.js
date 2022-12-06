@@ -38,6 +38,8 @@ function RestaurantList() {
         setFilter(event.target.value);
       };
 
+
+      if (!filteredRestaurants()) return <p>Loading...</p>;
 return (
     <Container maxWidth="sm">
         <Stack mt={2} spacing={3}>
