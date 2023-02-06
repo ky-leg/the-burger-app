@@ -1,5 +1,5 @@
 import Restaurant from "./Restaurant"
-import { Button, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'// eslint-disable-next-line
 import { BrowserRouter as Router,Link, useNavigate } from "react-router-dom";
 
 export default function Restaurants({ restaurants, handleDelete }){

@@ -1,29 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import styled from "styled-components";
-import NestedDishForm from "../dishes/NestedDishForm";
 import { Error } from "../../styles";
 import { useDispatch, useSelector } from "react-redux"
 import { fetchDishes } from "../dishes/dishesSlice"; // eslint-disable-next-line
 import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
-import { Stack, Rating, Container, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, TextField } from "@mui/material"
+import { Stack, Rating, Container, Typography, FormControl, Button, TextField } from "@mui/material"
 
 
 
-const StyledRating = styled(Rating)({
-  '& .MuiRating-iconFilled': {
-    color: '#ff6d75',
-  },
-  '& .MuiRating-iconHover': {
-    color: '#ff3d47',
-  },
-});
 
 function UpdateRatingForm({ userId }) {
   
   //redux setup
   const dispatch = useDispatch();
-  const restaurants = useSelector((state) => state.restaurants.entities)
+  // const restaurants = useSelector((state) => state.restaurants.entities)
   const ratings = useSelector((state) => state.ratings.entities)
 
   //accessing params to discern if we aer upadting an existing rating
@@ -66,7 +56,7 @@ function UpdateRatingForm({ userId }) {
       setIsLoading(false);
       if (r.ok) {
         r.json().then(dispatch(fetchDishes()))
-        .then(history(`/ratings/${rating.dish_id}}`));
+        .then(history(`/ratings/${rating.restaurant.id}/${rating.dish_id}}`));
       } else {
         r.json().then((err) => setErrors(err.errors));
       }
@@ -116,17 +106,5 @@ function UpdateRatingForm({ userId }) {
       </Container>
   );
 }
-
-const Wrapper = styled.section`
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 16px;
-  display: flex;
-  gap: 24px;
-`;
-
-const WrapperChild = styled.div`
-  flex: 1;
-`;
 
 export default UpdateRatingForm;

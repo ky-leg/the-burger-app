@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 import Rating from './Rating';

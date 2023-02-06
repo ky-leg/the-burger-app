@@ -1,19 +1,18 @@
-import { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router";
-import { fetchRatings } from "../ratings/ratingsSlice";
+import { fetchRatings } from "../ratings/ratingsSlice";// eslint-disable-next-line
 import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container, Stack, Typography, Button } from "@mui/material"
 import Ratings from './Ratings'
-import RatingsFilterForm from './RatingsFilter/RatingsFilterForm'
 
 function DishRatingsList() {
+    const dishes = useSelector((state) => state.dishes.entities)
     const dispatch = useDispatch(); 
     const history = useNavigate(); 
     //redux stores 
     const restaurants = useSelector((state) => state.restaurants.entities)
     const ratings = useSelector((state) => state.ratings.entities)
-    const dishes = useSelector((state) => state.dishes.entities)
+    
 
     const params = useParams() 
     console.log(dishes, params.dish_id)
@@ -23,31 +22,31 @@ function DishRatingsList() {
     }
 
     const dish = filteredDishFunction()
-
+    console.log(dish)
     function filteredRestaurantFunction(){
-        return restaurants.find(restaurant => parseInt(dish.restaurant_id) === parseInt(restaurant.id))
+        return restaurants.find(restaurant => parseInt(params.restaurant_id) === parseInt(restaurant.id))
     }
 
     const restaurant = filteredRestaurantFunction()
-    const dishRatings = filteredDishFunction().ratings
+    // const dishRatings = filteredDishFunction().ratings
 
-    function handleDeleteRating(ratingId, dishId){
-        fetch(`/ratings/${ratingId}`, {
+    function handleDeleteRating(rating){
+        fetch(`/ratings/${rating.id}`, {
             method: "DELETE",
           })
           .then(() => {
             dispatch(fetchRatings())
-            .then(history(`/`))
-            
+            .then(history(`/restaurants/${rating.restaurant.id}`))
           });
     }
-
+    if (!ratings){ return <p>Loading...</p>}
+    if (!dish){ return <p>Loading...</p>}
     return (
         <Container maxWidth="sm">
             <Typography variant="h4">Ratings for {dish.name} from {restaurant.name}</Typography>
             <Stack mt={2} spacing={3}>
             {ratings ? (
-                <Ratings ratings={dishRatings} displayUserButton={true} displayTitleOff={true} handleDeleteRating={handleDeleteRating}/>
+                <Ratings ratings={dish.ratings} displayUserButton={true} displayTitleOff={true} handleDeleteRating={handleDeleteRating}/>
             ) : (
                 <>
                 <h2>No Ratings Found</h2>

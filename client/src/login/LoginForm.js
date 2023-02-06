@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 // import { useDispatch, useSelector } from "react-redux"
 // import { userLogin } from "./usersSlice"
 import {  Error, Input, FormField, Label } from "../styles";
@@ -11,7 +12,7 @@ function LoginForm({ onLogin }) {
   const [isLoading, setIsLoading] = useState(false);
 
   // const dispatch = useDispatch();
-  
+  const history = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -25,6 +26,7 @@ function LoginForm({ onLogin }) {
     }).then((r) => {
       setIsLoading(false);
       if (r.ok) {
+        history("/")
         r.json().then((user) => onLogin(user))
       } else {
         r.json().then((err) => setErrors(err.errors));

@@ -3,11 +3,7 @@ import styled from "styled-components";
 import LoginForm from "./LoginForm"
 import SignUpForm from "./SignUpForm";
 import Button from '@mui/material/Button'
-// import { Button } from "../styles";
-// import Container from '@mui/material/Container';
-// import Typography from '@mui/material/Typography';
-// import Box from '@mui/material/Box';
-// import Link from '@mui/material/Link';
+
 
 
 function Login({ onLogin }) {
@@ -43,12 +39,7 @@ function Login({ onLogin }) {
     );
   }
 
-  const Logo = styled.h1`
-  font-family: "Permanent Marker", cursive;
-  font-size: 3rem;
-  color: darkblue;
-  margin: 8px 0 16px;
-`;
+
 
 const Wrapper = styled.section`
   max-width: 500px;

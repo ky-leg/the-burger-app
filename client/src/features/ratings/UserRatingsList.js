@@ -1,17 +1,18 @@
-import { useState, useEffect } from "react"; 
+import { useNavigate } from "react-router";
+import { fetchRatings } from "../ratings/ratingsSlice";// eslint-disable-next-line
 import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Container, Stack, Typography, Button } from "@mui/material"
 import Ratings from './Ratings'
-import RatingsFilterForm from './RatingsFilter/RatingsFilterForm'
 import UserCard from "../users/UserCard";
 
-function UserRatingsList({user}) {
+function UserRatingsList() {
+    const dispatch = useDispatch(); 
+    const history = useNavigate(); 
     //redux stores 
-    const restaurants = useSelector((state) => state.restaurants.entities)
     const ratings = useSelector((state) => state.ratings.entities)
     const users = useSelector((state) => state.users.entities)
-    const params = useParams()
+    const params = useParams()// eslint-disable-next-line
     const userPage = users.find(user => user.id == params.id )
 
     function filteredRatingsFunction() {
@@ -19,7 +20,15 @@ function UserRatingsList({user}) {
         return filteredRatings
     }
 
-    
+    function handleDeleteRating(rating){
+        fetch(`/ratings/${rating.id}`, {
+            method: "DELETE",
+          })
+          .then(() => {
+            dispatch(fetchRatings())
+            .then(history(`/restaurants/${rating.restaurant.id}`))
+          });
+    }
 
     if (!userPage) return <p>Loading...</p>;
 
@@ -31,7 +40,7 @@ function UserRatingsList({user}) {
                 <UserCard user={userPage}/>
                 ):""}
             {ratings ? (
-                <Ratings ratings={filteredRatingsFunction()}/>
+                <Ratings ratings={filteredRatingsFunction()} handleDeleteRating={handleDeleteRating}/>
             ) : (
                 <>
                 <h2>No Ratings Found</h2>

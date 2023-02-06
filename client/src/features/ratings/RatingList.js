@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react"; 
-import styled from "styled-components";
-import {  Form, FormField, Label } from "../../styles";
+// eslint-disable-next-line
+import { useState, useEffect } from "react"; // eslint-disable-next-line
 import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Container, Stack, Card, CardHeader, CardActions, CardContent, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, Rating } from "@mui/material"
+import { Container, Stack, Card, CardHeader, CardActions, CardContent, Typography, FormControl, MenuItem, InputLabel, Select, Button, Rating } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 
  
 //review what updates when a rating is submitted... 
+// eslint-disable-next-line
 function RatingList({user}) {
     //redux stores 
     const restaurants = useSelector((state) => state.restaurants.entities)
@@ -36,6 +36,19 @@ function RatingList({user}) {
             return ratings.filter((rating => (rating.restaurant.name === restaurantFilter)))
         }
     }
+
+    const filteredLocations = () => {
+        if (restaurantFilter==="-")
+        {
+            return locations
+        }
+        else 
+        {
+            return restaurantFilter
+        }
+    }
+
+    console.log(filteredLocations)
 
     //filter switch
     const params = useParams()
@@ -100,15 +113,15 @@ function RatingList({user}) {
     }
 
 
-    function handleDeleteRating(id){
-        fetch(`/ratings/${id}`, {
-            method: 'DELETE',
-        })
-        // .then(() => {
-        //     const newRatings = ratings.filter(rating => (rating.id !== id))
-        //     setRatings(newRatings)
-        // })
-    }
+    // function handleDeleteRating(id){
+    //     fetch(`/ratings/${id}`, {
+    //         method: 'DELETE',
+    //     })
+    //     // .then(() => {
+    //     //     const newRatings = ratings.filter(rating => (rating.id !== id))
+    //     //     setRatings(newRatings)
+    //     // })
+    // }
 
 
     return (

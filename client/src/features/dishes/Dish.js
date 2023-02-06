@@ -1,8 +1,8 @@
-import { Container, Stack, Card, CardHeader, CardActions, CardContent, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, Rating } from "@mui/material"
+import { Card, CardHeader, CardActions, CardContent, Typography, Button, Rating } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { useDispatch } from "react-redux";
-import { fetchDishes } from "./dishesSlice";
+import { fetchDishes } from "./dishesSlice";// eslint-disable-next-line
 import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
 
 
@@ -12,6 +12,7 @@ export default function Dish({dish, handleDeleteDish}){
     const dispatch = useDispatch()
 
     //handling dish delete
+    // eslint-disable-next-line
     function handleDeleteDish(id){
         fetch(`/dishes/${id}`, {
             method: 'DELETE',
@@ -38,7 +39,7 @@ export default function Dish({dish, handleDeleteDish}){
             <CardActions>
             <Button
                 component={Link}
-                to={`/ratings/${dish.id}`}
+                to={`/ratings/${dish.restaurant_id}/${dish.id}`}
                 variant="outlined"
             >
                 Read Reviews    

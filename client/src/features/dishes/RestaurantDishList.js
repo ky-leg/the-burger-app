@@ -2,7 +2,7 @@
 import { fetchDishes } from "./dishesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { Container, Stack, Box, Typography, Button } from "@mui/material"
+import { Container, Stack, Box, Typography, Button } from "@mui/material"// eslint-disable-next-line
 import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
 import Dishes from './Dishes'
 

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { fetchUsers } from "../features/users/usersSlice";
 import { Button, Error, Input, FormField, Label } from "../styles";
 
 function SignUpForm({ onLogin }) {
@@ -10,6 +12,8 @@ function SignUpForm({ onLogin }) {
   // const [age, setAge] = useState("-");
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useDispatch()
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -30,8 +34,8 @@ function SignUpForm({ onLogin }) {
     }).then((r) => {
       setIsLoading(false);
       if (r.ok) {
+        dispatch(fetchUsers())
         r.json().then((user) => onLogin(user))
-        // .then(console.log("hey!"))
       } else {
         r.json().then((err) => setErrors(err.errors));
       }

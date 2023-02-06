@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { fetchRestaurants } from './features/restaurants/restaurantsSlice';
 import { fetchDishes } from './features/dishes/dishesSlice'
 import { fetchRatings } from './features/ratings/ratingsSlice';
-import RatingList from './features/ratings/RatingList';
+// import RatingList from './features/ratings/RatingList';
 import { fetchUsers } from './features/users/usersSlice';
 import UserRatingsList from './features/ratings/UserRatingsList'
 import DishRatingsList from './features/ratings/DishRatingsList';
@@ -100,7 +100,7 @@ function App() {
               element={<RatingForm userId={user.id} />}
             />
             <Route 
-              path="/ratings/:dish_id/" 
+              path="/ratings/:restaurant_id/:dish_id/" 
               element={<DishRatingsList userId={user.id} />}
             />
             <Route 

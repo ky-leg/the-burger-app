@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import styled from "styled-components";
 import NestedDishForm from "../dishes/NestedDishForm";
 import { Error } from "../../styles";
 import { useDispatch, useSelector } from "react-redux"
@@ -8,19 +7,11 @@ import { fetchRestaurants } from '../restaurants/restaurantsSlice';
 import { fetchDishes } from '../dishes/dishesSlice'
 import { fetchRatings } from '../ratings/ratingsSlice';// eslint-disable-next-line
 import { BrowserRouter as Router, Link, useParams } from "react-router-dom";
-import { Stack, Rating, Container, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button, TextField } from "@mui/material"
+import { Stack, Rating, Container, Typography, FormControl, MenuItem, InputLabel, Select, Button, TextField } from "@mui/material"
 
 
 
 
-const StyledRating = styled(Rating)({
-  '& .MuiRating-iconFilled': {
-    color: '#ff6d75',
-  },
-  '& .MuiRating-iconHover': {
-    color: '#ff3d47',
-  },
-});
 
 function NewRating({ userId }) {
   //redux setup
@@ -99,6 +90,16 @@ function NewRating({ userId }) {
           return dishId
         }
       }
+
+      const resolveRestaurantId = () => {
+        if (params.restaurant_id && params.dish_id){
+          return params.restaurant_id 
+        }
+        else {
+          return restaurantId
+        }
+      }
+
       fetch("/ratings", {
         method: "POST",
         headers: {
@@ -118,7 +119,7 @@ function NewRating({ userId }) {
           r.json().then(dispatch(fetchDishes()))
           .then(dispatch(fetchRatings()))
           .then(dispatch(fetchRestaurants()))
-          .then(history(`/ratings/${resolveDishId()}`));
+          .then(history(`/ratings/${resolveRestaurantId()}/${resolveDishId()}`));
         } else {
           r.json().then((err) => setErrors(err.errors));
         }
@@ -239,17 +240,5 @@ console.log(dishId, displayNestedForm())
       </Container>
   );
 }
-
-const Wrapper = styled.section`
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 16px;
-  display: flex;
-  gap: 24px;
-`;
-
-const WrapperChild = styled.div`
-  flex: 1;
-`;
 
 export default NewRating;

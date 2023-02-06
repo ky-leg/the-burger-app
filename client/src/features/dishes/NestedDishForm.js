@@ -1,6 +1,4 @@
-import styled from "styled-components";
-import { FormField, Input, Label } from "../../styles";
-import { Stack, Checkbox, Container, Box, Typography, FormControl, FormControlLabel, MenuItem, InputLabel, Select, Button, TextField } from "@mui/material"
+import { Stack, Checkbox, Typography, FormControl, FormControlLabel, MenuItem, InputLabel, Select, TextField } from "@mui/material"
 
 
 function NestedDishForm({ dishName, setDishName, dishType, setDishType, dishVegan, setDishVegan}) {
@@ -33,16 +31,6 @@ function NestedDishForm({ dishName, setDishName, dishType, setDishType, dishVega
   );
 }
 
-const Wrapper = styled.section`
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 16px;
-  display: flex;
-  gap: 24px;
-`;
 
-const WrapperChild = styled.div`
-  flex: 1;
-`;
 
 export default NestedDishForm;

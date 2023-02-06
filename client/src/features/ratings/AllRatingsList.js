@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; 
+import { useState } from "react"; // eslint-disable-next-line
 import { BrowserRouter as Router,Link, Route, useParams } from "react-router-dom";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,7 +57,7 @@ function AllRatingsList({user}) {
             
           });
     }
-
+    if (!ratings){ return <p>Loading...</p>}
     return (
         <Container maxWidth="sm">
             <Typography variant="h4">Latest Ratings</Typography>
@@ -66,8 +66,8 @@ function AllRatingsList({user}) {
                     neighborhoodFilter={locationFilter} 
                     restaurantFilter={restaurantFilter} 
                     locations={locations} 
-                    
                     restaurantNames={restaurantNames}
+                    restaurants={restaurants}
                     setRestaurantFilter={setRestaurantFilter}
                     setNeighborhoodFilter={setLocationFilter}
                 />

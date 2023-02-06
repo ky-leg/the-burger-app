@@ -1,10 +1,10 @@
 import { useState } from "react"; 
-import styled from "styled-components";
-// import {  Box, Label } from "../../styles"; // eslint-disable-next-line
+// import {  Box, Label } from "../../styles"; 
+// eslint-disable-next-line
 import { BrowserRouter as Router,Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux"
-import { fetchRestaurants } from "./restaurantsSlice"
-import { Container, Stack, Card, CardHeader, CardActions, CardContent, Box, Typography, FormControl, MenuItem, InputLabel, Select, Button } from "@mui/material"
+import { useSelector } from "react-redux"
+// import { fetchRestaurants } from "./restaurantsSlice"
+import { Container, Stack, Typography, Button } from "@mui/material"
 
 import RestaurantFilterForm from './RestaurantFilterForm';
 import Restaurants from './Restaurants'
@@ -12,9 +12,9 @@ import Restaurants from './Restaurants'
 function RestaurantList() {
     const restaurants = useSelector((state) => state.restaurants.entities)
     const [ filter, setFilter ] = useState("-")
-    const locations = restaurants.map((r) => r.location)
-    const history = useNavigate()
-    const dispatch = useDispatch()
+    // const locations = restaurants.map((r) => r.location)
+    // const history = useNavigate()
+    // const dispatch = useDispatch()
     console.log(restaurants)
     const filteredRestaurants = () => {
         if (filter === "-")
@@ -26,13 +26,13 @@ function RestaurantList() {
         }
     }
 
-    function handleDeleteRestaurant(id){
-        fetch(`/restaurants/${id}`, {
-            method: 'DELETE',
-        })
-        .then(dispatch(fetchRestaurants()))
-        .then(history(`/restaurants`));
-    }
+    // function handleDeleteRestaurant(id){
+    //     fetch(`/restaurants/${id}`, {
+    //         method: 'DELETE',
+    //     })
+    //     .then(dispatch(fetchRestaurants()))
+    //     .then(history(`/restaurants`));
+    // }
 
     const handleChange = (event) => {
         setFilter(event.target.value);

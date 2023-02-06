@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { BrowserRouter as Router,Link, Route, useParams, useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardActions, CardContent, Typography, Button, Rating as RatingStyle } from "@mui/material"
 import { useState, useEffect  } from 'react';
@@ -34,7 +35,7 @@ function Rating({rating, displayUserButton, displayTitleOff, handleDeleteRating}
 
     function onDeleteClick(){
         if (parseInt(rating.user.id) === parseInt(user.id)){
-            handleDeleteRating(rating.id, rating.dish.id)
+            handleDeleteRating(rating)
             
         }
         else {
